@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D356F7612E47FE9200A51DEB /* DeliHoodApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D356F75D2E47FE9200A51DEB /* DeliHoodApp.swift */; };
-		D356F7622E47FE9200A51DEB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D356F75C2E47FE9200A51DEB /* Assets.xcassets */; };
 		D356F82E2E4A3A7E00A51DEB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = D356F82D2E4A3A7E00A51DEB /* GoogleSignIn */; };
 		D356F8302E4A3A7E00A51DEB /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D356F82F2E4A3A7E00A51DEB /* GoogleSignInSwift */; };
+		D356FA8D2E4B839400A51DEB /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = D356FA8C2E4B839400A51DEB /* Auth0 */; };
+		D356FAD02E4B898C00A51DEB /* DeliHoodApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D356F75D2E47FE9200A51DEB /* DeliHoodApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,9 +20,32 @@
 		D356F7FC2E4932E200A51DEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D356FAAE2E4B84DD00A51DEB /* Exceptions for "DeliHood" folder in "DeliHood" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DeliHoodApp.swift,
+				Info.plist,
+				Models/User.swift,
+				Screens/MainScreenView.swift,
+				"Utils/Errorhandling/Errors Handling.swift",
+				Utils/Errorhandling/Validator.swift,
+				Utils/Networking/AuthManager.swift,
+				Utils/Networking/NetworkManager.swift,
+				Views/LoginView/LoginView.swift,
+				Views/LoginView/LoginViewModel.swift,
+				Views/RegisterView/RegisterViewModel.swift,
+			);
+			target = D32F3A2F2E2E54FE002783E5 /* DeliHood */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D32F3A322E2E54FE002783E5 /* DeliHood */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D356FAAE2E4B84DD00A51DEB /* Exceptions for "DeliHood" folder in "DeliHood" target */,
+			);
 			path = DeliHood;
 			sourceTree = "<group>";
 		};
@@ -53,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D356FA8D2E4B839400A51DEB /* Auth0 in Frameworks */,
 				D356F82E2E4A3A7E00A51DEB /* GoogleSignIn in Frameworks */,
 				D356F8302E4A3A7E00A51DEB /* GoogleSignInSwift in Frameworks */,
 			);
@@ -65,7 +89,6 @@
 			isa = PBXGroup;
 			children = (
 				D356F75F2E47FE9200A51DEB /* DeliHood */,
-				D356F8152E49400400A51DEB /* Frameworks */,
 				D32F3A312E2E54FE002783E5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,13 +114,6 @@
 				D356F75D2E47FE9200A51DEB /* DeliHoodApp.swift */,
 			);
 			path = DeliHood;
-			sourceTree = "<group>";
-		};
-		D356F8152E49400400A51DEB /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -126,6 +142,7 @@
 			packageProductDependencies = (
 				D356F82D2E4A3A7E00A51DEB /* GoogleSignIn */,
 				D356F82F2E4A3A7E00A51DEB /* GoogleSignInSwift */,
+				D356FA8C2E4B839400A51DEB /* Auth0 */,
 			);
 			productName = DeliHood;
 			productReference = D32F3A302E2E54FE002783E5 /* DeliHood.app */;
@@ -157,6 +174,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				D356F82C2E4A3A7E00A51DEB /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				D356FA8B2E4B839400A51DEB /* XCRemoteSwiftPackageReference "Auth0" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D32F3A312E2E54FE002783E5 /* Products */;
@@ -173,7 +191,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D356F7622E47FE9200A51DEB /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,7 +201,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D356F7612E47FE9200A51DEB /* DeliHoodApp.swift in Sources */,
+				D356FAD02E4B898C00A51DEB /* DeliHoodApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,6 +429,14 @@
 				minimumVersion = 9.0.0;
 			};
 		};
+		D356FA8B2E4B839400A51DEB /* XCRemoteSwiftPackageReference "Auth0" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/Auth0.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.14.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -424,6 +449,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D356F82C2E4A3A7E00A51DEB /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		D356FA8C2E4B839400A51DEB /* Auth0 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D356FA8B2E4B839400A51DEB /* XCRemoteSwiftPackageReference "Auth0" */;
+			productName = Auth0;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
