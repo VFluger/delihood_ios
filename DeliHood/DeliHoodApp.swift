@@ -11,7 +11,7 @@ import SwiftUI
 struct DeliHoodApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainScreenView()
         }
     }
 }
