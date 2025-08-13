@@ -6,10 +6,9 @@
 //
 import Foundation
 import SwiftUI
-import GoogleSignIn
 
 @MainActor
-final class LoginViewModel: ObservableObject {
+final class LoginViewModel: ObservableObject, OAuthVMProtocol {
     
     @Published var email: String = ""
     @Published var password: String = ""
@@ -23,8 +22,7 @@ final class LoginViewModel: ObservableObject {
         Validator.validateEmail(email) && Validator.validatePassword(password)
     }
     
-    func loginUser() {
-        Task {
+    func loginUser() async {
             do {
                 try await AuthManager.shared.login(email: email, password: password)
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -46,33 +44,5 @@ final class LoginViewModel: ObservableObject {
             } catch {
                 alertItem = AlertContext.failLogin
             }
-        }
-    }
-    
-    func googleSign() {
-        guard let clientID = Bundle.main.object(forInfoDictionaryKey: "CLIENT_ID") as? String else { return }
-        let config = GIDConfiguration(clientID: clientID)
-        
-        // Get a proper UIViewController for presenting
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first?.rootViewController else {
-            return
-        }
-        
-        // Present Google Sign-In
-        GIDSignIn.sharedInstance.configuration = config
-        GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { result, error in
-            if let error = error {
-                print("Google Sign-In failed: \(error.localizedDescription)")
-                return
-            }
-            guard let user = result?.user else { return }
-            let idToken = user.idToken?.tokenString ?? ""
-            let accessToken = user.accessToken.tokenString
-            print("Google Sign-In success. ID Token: \(idToken), Access Token: \(accessToken)")
-            // Send tokens to backend or proceed in app
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-            
-        }
     }
 }

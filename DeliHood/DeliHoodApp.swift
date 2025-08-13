@@ -50,7 +50,7 @@ struct DeliHoodApp: App {
                 Task {
                     do {
                         try await NetworkManager.shared.postConfirmMail(token: token ?? "")
-                        authState.userState = .loggedIn
+                        await authState.updateState()
                     }catch {
                         print(error)
                         authState.userState = .emailNotVerified

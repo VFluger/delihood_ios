@@ -28,13 +28,9 @@
 				Info.plist,
 				Models/User.swift,
 				Screens/MainScreenView.swift,
-				"Utils/Errorhandling/Errors Handling.swift",
 				Utils/Errorhandling/Validator.swift,
 				Utils/Networking/AuthManager.swift,
 				Utils/Networking/NetworkManager.swift,
-				Views/LoginView/LoginView.swift,
-				Views/LoginView/LoginViewModel.swift,
-				Views/RegisterView/RegisterViewModel.swift,
 			);
 			target = D32F3A2F2E2E54FE002783E5 /* DeliHood */;
 		};

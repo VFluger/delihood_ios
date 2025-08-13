@@ -8,8 +8,9 @@ import SwiftUI
 
 
 @MainActor
-final class RegisterViewModel: ObservableObject {
+final class RegisterViewModel: ObservableObject, OAuthVMProtocol {
     
+    //Form data
     @Published var currentStep = 0
     @Published var username = ""
     @Published var email = ""
@@ -39,15 +40,14 @@ final class RegisterViewModel: ObservableObject {
         Validator.validateEmail(email) && Validator.validatePassword(password) && password == confirmPassword && Validator.validatePhone(phoneNum) && isConsent
     }
     
-    func registerUser() {
+    //Register, then log in, if error, show the alertItem
+    func registerUser() async {
         isLoading = true
         Task {
             do {
                 try await AuthManager.shared.register(email: email, password: password, phone: phoneNum, name: username)
                 try await AuthManager.shared.login(email: email,
                                                    password: password)
-                print("ACCESS TOKEN: ")
-                print(AuthManager.shared.getAccessToken() ?? "No token")
                 isLoading = false
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
@@ -59,7 +59,6 @@ final class RegisterViewModel: ObservableObject {
                 default:
                     alertItem = AlertContext.failRegister
                 }
-                print(error)
                 isLoading = false
                 UINotificationFeedbackGenerator().notificationOccurred(.warning)
             }

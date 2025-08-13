@@ -24,14 +24,13 @@ class AuthState: ObservableObject {
     
     init() {
         Task{
-            await getUser()
+            await updateState()
         }
     }
-    func getUser() async -> User? {
+    func updateState() async {
             do {
                 user = try await NetworkManager.shared.getMe()
                 userState = .loggedIn
-                return user
             } catch {
                 print(error)
                 switch error {
@@ -40,7 +39,6 @@ class AuthState: ObservableObject {
                 default:
                     userState = .loggedOut
                 }
-                return nil
             }
     }
 }

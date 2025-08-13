@@ -1,0 +1,62 @@
+//
+//  LoggedOutWelcomeView.swift
+//  DeliHood
+//
+//  Created by Vojta Fluger on 13.08.2025.
+//
+
+import SwiftUI
+
+
+struct LoggedOutWelcomeView: View {
+    
+    var body: some View {
+        NavigationStack {
+            VStack {
+                Spacer()
+                Image(systemName: "person.crop.circle.fill.badge.plus")
+                    .font(.system(size: 150))
+                Text("Login or create an account...")
+                Spacer()
+                GeometryReader { geo in
+                    VStack {
+                        NavigationLink(destination: LoginView()) {
+                            Text("Login")
+                                .font(.title2)
+                                .foregroundStyle(.black)
+                                .fontWeight(.semibold)
+                                .frame(width: geo.size.width * 0.8)
+                                .padding(.vertical, 10)
+                                .padding(.horizontal, 20)
+                                .glassEffect(
+                                    .regular
+                                        .tint(Color(.blue).opacity(0.4))
+                                        .interactive()
+                                )
+                        }
+                        NavigationLink(destination: RegisterView()) {
+                            Text("Register")
+                                .font(.title2)
+                                .foregroundStyle(.black)
+                                .fontWeight(.semibold)
+                                .frame(width: geo.size.width * 0.8)
+                                .padding(.vertical, 10)
+                                .padding(.horizontal, 20)
+                                .glassEffect(
+                                    .regular
+                                        .interactive()
+                                )
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .frame(height: 150) // limit height for GeometryReader so it doesn't expand full screen
+            }
+            .padding()
+        }
+    }
+}
+
+#Preview {
+    LoggedOutWelcomeView()
+}
