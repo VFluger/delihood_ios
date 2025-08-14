@@ -13,7 +13,7 @@ enum FocusedField {
 }
 
 struct LoginView: View {
-    @EnvironmentObject var authState: AuthState
+    @EnvironmentObject var authState: AuthStore
     
     @StateObject var vm = LoginViewModel()
     
@@ -32,7 +32,7 @@ struct LoginView: View {
                 .multilineTextAlignment(.center)
             Spacer()
                 .frame(height: 40)
-            OAuthView(vm: vm)
+            OAuthView(parentVm: vm)
             Spacer()
                 .frame(height: 40)
             
@@ -110,7 +110,7 @@ struct EmailTextView: View {
 }
 
 struct PasswordTextView: View {
-    @ObservedObject var authState: AuthState
+    @ObservedObject var authState: AuthStore
     @ObservedObject var vm: LoginViewModel
     
     @FocusState.Binding var focusedField: FocusedField?
@@ -146,6 +146,6 @@ struct PasswordTextView: View {
 
 #Preview {
     LoginView()
-        .environmentObject(AuthState())
+        .environmentObject(AuthStore())
 }
 

@@ -16,4 +16,13 @@ extension View {
                 .interactive(interactive ?? false)
         )
     }
+    func loadingOverlay(_ isLoading: Bool) -> some View {
+        self
+            .blur(radius: isLoading ? 20 : 0)
+            .overlay {
+                if isLoading {
+                    LoadingOverlayView()
+                }
+            }
+    }
 }

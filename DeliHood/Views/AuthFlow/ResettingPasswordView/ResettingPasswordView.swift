@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ResettingPasswordView: View {
-    @EnvironmentObject var authState: AuthState
+    @EnvironmentObject var authState: AuthStore
     
     @StateObject var vm = ResettingPasswordViewModel()
     
@@ -43,7 +43,7 @@ struct ResettingPasswordView: View {
                 // Log out user
                 withAnimation(.easeOut) {
                     AuthManager.shared.logout()
-                    authState.userState = .loggedOut
+                    authState.appState = .loggedOut
                 }
             })
         }
@@ -52,7 +52,7 @@ struct ResettingPasswordView: View {
 
 struct ConfirmPasswordView: View {
     @ObservedObject var vm: ResettingPasswordViewModel
-    @ObservedObject var authState: AuthState
+    @ObservedObject var authState: AuthStore
     
     var body: some View {
         SecureField("Confirm Password", text: $vm.confirmPassword)
@@ -77,7 +77,7 @@ struct ConfirmPasswordView: View {
 
 struct ResetPasswordView: View {
     @ObservedObject var vm: ResettingPasswordViewModel
-    @ObservedObject var authState: AuthState
+    @ObservedObject var authState: AuthStore
     
     var body: some View {
         SecureField("Password", text: $vm.password)
@@ -95,5 +95,5 @@ struct ResetPasswordView: View {
 
 #Preview {
     ResettingPasswordView()
-        .environmentObject(AuthState())
+        .environmentObject(AuthStore())
 }

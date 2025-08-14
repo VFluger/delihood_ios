@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject var authState: AuthState
+    @EnvironmentObject var authState: AuthStore
     
     var body: some View {
         Text("username: \(authState.user?.username ?? "NOTHING")")
         Button("Log out") {
             AuthManager.shared.logout()
-            authState.userState = .loggedOut
+            authState.appState = .loggedOut
             authState.user = nil
         }
     }

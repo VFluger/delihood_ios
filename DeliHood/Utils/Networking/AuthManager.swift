@@ -11,7 +11,7 @@ import SimpleKeychain
 class AuthManager {
     static let shared = AuthManager()
     
-    private let authDomain = "http://localhost:8080"
+    private let authDomain = "https://delihood-backend.onrender.com"
     
     private let keychain = SimpleKeychain(service: "com.VFluger.DeliHood", synchronizable: true)
     private init() {}
@@ -32,7 +32,7 @@ class AuthManager {
         
     }
     
-    func register(email: String, password: String, phone: String, name: String) async throws {
+    func register(email: String, password: String? = nil, phone: String, name: String) async throws {
         let registerRequest = RegisterRequest(email: email, password: password, phone: phone, username: name)
         let url = URL(string: "\(authDomain)/auth/register")!
         
@@ -82,7 +82,7 @@ class AuthManager {
         return try await URLSession.shared.data(for: request)
     }
     
-    private func saveTokens(_ tokens: AuthTokens) -> Bool {
+    func saveTokens(_ tokens: AuthTokens) -> Bool {
         do {
             try keychain.set(tokens.accessToken, forKey: "accessToken")
             try keychain.set(tokens.refreshToken, forKey: "refreshToken")

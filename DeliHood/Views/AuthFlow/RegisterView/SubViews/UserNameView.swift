@@ -16,7 +16,7 @@ struct UserNameView: View {
     var body: some View {
         
         Spacer()
-        OAuthView(vm: vm)
+        OAuthView(parentVm: vm)
         Spacer()
             .frame(height: 30)
         

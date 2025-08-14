@@ -10,35 +10,47 @@ import GoogleSignIn
 
 //TODO: Error handling
 protocol OAuthVMProtocol {
-    func googleSign()
+    func googleSign() async -> AuthResult?
 }
 
 extension OAuthVMProtocol {
-    func googleSign() {
-        //Get clientID from info.plist and set it
-        guard let clientID = Bundle.main.object(forInfoDictionaryKey: "CLIENT_ID") as? String else { return }
-        let config = GIDConfiguration(clientID: clientID)
-        
-        // Get a proper UIViewController for presenting
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first?.rootViewController else {
-            return
+    func googleSign() async -> AuthResult? {
+        guard let clientID = Bundle.main.object(forInfoDictionaryKey: "CLIENT_ID") as? String else {
+            return nil
         }
-        
-        // Present Google Sign-In
+
+        let config = GIDConfiguration(clientID: clientID)
+
+        guard let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = await windowScene.windows.first?.rootViewController else {
+            return nil
+        }
+
         GIDSignIn.sharedInstance.configuration = config
-        GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { result, error in
-            if let error = error {
-                print("Google Sign-In failed: \(error.localizedDescription)")
-                return
+
+        return await withCheckedContinuation { continuation in
+            GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { result, error in
+                if let error = error {
+                    print("Google Sign-In failed: \(error.localizedDescription)")
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                guard let user = result?.user else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let idToken = user.idToken?.tokenString ?? ""
+                let accessToken = user.accessToken.tokenString
+                print("Google Sign-In success. ID Token: \(idToken), Access Token: \(accessToken)")
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+
+                Task {
+                    let authResult = try? await NetworkManager.shared.postGoogleToken(token: idToken)
+                    continuation.resume(returning: authResult)
+                }
             }
-            guard let user = result?.user else { return }
-            let idToken = user.idToken?.tokenString ?? ""
-            let accessToken = user.accessToken.tokenString
-            print("Google Sign-In success. ID Token: \(idToken), Access Token: \(accessToken)")
-            // Send tokens to backend or proceed in app
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-            
         }
     }
 }

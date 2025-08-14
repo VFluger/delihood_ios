@@ -15,7 +15,7 @@ enum PasswordFocusedField {
 
 struct PasswordView: View {
     @ObservedObject var vm: RegisterViewModel
-    @ObservedObject var authState: AuthState
+    @ObservedObject var authState: AuthStore
     
     @State var isPasswordValid: Bool = true
     @State var isConfirmValid: Bool = true
@@ -87,5 +87,5 @@ struct PasswordView: View {
 }
 
 #Preview {
-    PasswordView(vm: RegisterViewModel(), authState: AuthState())
+    PasswordView(vm: RegisterViewModel(), authState: AuthStore())
 }

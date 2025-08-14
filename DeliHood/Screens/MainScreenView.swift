@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct MainScreenView: View {
-    @EnvironmentObject var authState: AuthState
+    @EnvironmentObject var authState: AuthStore
     
     var body: some View {
         VStack {
-            switch authState.userState {
+            switch authState.appState {
             case .loading:
                 ProgressView()
                     .scaleEffect(2)

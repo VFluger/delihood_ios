@@ -14,7 +14,7 @@ enum HandledUrlSchemePath: String {
 
 @main
 struct DeliHoodApp: App {
-    @StateObject var authState = AuthState()
+    @StateObject var authState = AuthStore()
     
     var body: some Scene {
         WindowGroup {
@@ -38,13 +38,13 @@ struct DeliHoodApp: App {
                     return
                 }
                 authState.resetPasswordToken = token!
-                authState.userState = .resetingPassword
+                authState.appState = .resetingPassword
                 break
             case HandledUrlSchemePath.confirmMail.rawValue:
-                authState.userState = .validatingMail
+                authState.appState = .validatingMail
                 let token = url.getToken()
                 guard token != nil else {
-                    authState.userState = .emailNotVerified
+                    authState.appState = .emailNotVerified
                     return
                 }
                 Task {
@@ -53,7 +53,7 @@ struct DeliHoodApp: App {
                         await authState.updateState()
                     }catch {
                         print(error)
-                        authState.userState = .emailNotVerified
+                        authState.appState = .emailNotVerified
                         return
                     }
                 }

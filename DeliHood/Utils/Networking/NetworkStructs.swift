@@ -14,7 +14,7 @@ struct LoginRequest: Codable {
 
 struct RegisterRequest: Codable {
     let email: String
-    let password: String
+    let password: String?
     let phone: String
     let username: String
 }
@@ -44,4 +44,13 @@ struct PasswordResetMail: Encodable {
 struct NewPassword: Encodable {
     let token: String
     let password: String
+}
+
+struct GoogleSign: Encodable {
+    let token:  String
+}
+
+struct GoogleSignRegisterResponse: Decodable {
+    let email: String
+    let username: String
 }

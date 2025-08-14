@@ -9,11 +9,11 @@ import SwiftUI
 
 struct RegisterView: View {
     
-    @EnvironmentObject var authState: AuthState
+    @EnvironmentObject var authState: AuthStore
     @StateObject var vm = RegisterViewModel()
     
     var body: some View {
-        VStack {
+        NavigationStack {
             Text("Registration")
                 .font(.largeTitle)
                 .fontWeight(.bold)

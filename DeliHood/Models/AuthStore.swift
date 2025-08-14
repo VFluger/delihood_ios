@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import SwiftUI
 
-enum UserState {
+enum AppState {
     case loading
     case emailNotVerified
     case validatingMail
@@ -17,8 +18,8 @@ enum UserState {
 }
 
 @MainActor
-class AuthState: ObservableObject {
-    @Published var userState: UserState = .loading
+class AuthStore: ObservableObject {
+    @Published var appState: AppState = .loading
     @Published var user: User?
     @Published var resetPasswordToken: String?
     
@@ -30,14 +31,18 @@ class AuthState: ObservableObject {
     func updateState() async {
             do {
                 user = try await NetworkManager.shared.getMe()
-                userState = .loggedIn
+                withAnimation(.easeOut) {
+                    appState = .loggedIn
+                }
             } catch {
                 print(error)
-                switch error {
-                case AuthError.emailNotVerified:
-                    userState = .emailNotVerified
-                default:
-                    userState = .loggedOut
+                withAnimation(.easeOut) {
+                    switch error {
+                    case AuthError.emailNotVerified:
+                        appState = .emailNotVerified
+                    default:
+                        appState = .loggedOut
+                    }
                 }
             }
     }

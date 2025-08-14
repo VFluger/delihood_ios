@@ -7,9 +7,13 @@
 
 import SwiftUI
 
+enum AuthResult {
+    case success
+    case needsRegistration(GoogleSignRegisterResponse, token: String)
+}
 
 class NetworkManager {
-    let baseURL = "http://localhost:8080"
+    let baseURL = "https://delihood-backend.onrender.com"
     
     static let shared = NetworkManager()
     
@@ -22,6 +26,30 @@ class NetworkManager {
         }
         
         return try JSONDecoder().decode(getUserHelper.self, from: data).data
+    }
+    
+    
+    @discardableResult
+    func postGoogleToken(token: String) async throws -> AuthResult {
+        let data = try await genericPost(path: "/auth/google-sign", body: GoogleSign(token: token), sendJWT: false)
+        // If user exists, tokens send, if not, email and name send
+        do {
+            let tokens = try JSONDecoder().decode(AuthTokens.self, from: data)
+            
+            if !AuthManager.shared.saveTokens(tokens) {
+                throw AuthError.saveTokensFailed
+            }
+            //SUCCESS
+            return .success
+            
+        }catch {
+            print("User not registered, try decode")
+            let userData = try JSONDecoder().decode(GoogleSignRegisterResponse.self, from: data)
+            print("Decode success")
+            //User not registered
+            return .needsRegistration(userData, token: token)
+        }
+        
     }
     
     //MARK: - ConfirmMail and Reset password
