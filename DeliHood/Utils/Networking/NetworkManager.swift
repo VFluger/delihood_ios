@@ -120,7 +120,6 @@ class NetworkManager {
             if accessToken.isEmpty {
                 // code
                 print("Access Token not available")
-                throw AuthError.cannotGetToken
             }
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
