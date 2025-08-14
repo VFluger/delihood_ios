@@ -15,7 +15,7 @@ enum PasswordFocusedField {
 
 struct PasswordView: View {
     @ObservedObject var vm: RegisterViewModel
-    @ObservedObject var authState: AuthStore
+    @ObservedObject var authStore: AuthStore
     
     @State var isPasswordValid: Bool = true
     @State var isConfirmValid: Bool = true
@@ -51,7 +51,7 @@ struct PasswordView: View {
                     //SUBMIT
                     Task {
                         await vm.registerUser()
-                        await authState.updateState()
+                        await authStore.updateState()
                     }
                 }
             }
@@ -68,7 +68,7 @@ struct PasswordView: View {
         Button {
             Task {
                 await vm.registerUser()
-                await authState.updateState()
+                await authStore.updateState()
             }
         } label: {
             if vm.isLoading {
@@ -87,5 +87,5 @@ struct PasswordView: View {
 }
 
 #Preview {
-    PasswordView(vm: RegisterViewModel(), authState: AuthStore())
+    PasswordView(vm: RegisterViewModel(), authStore: AuthStore())
 }

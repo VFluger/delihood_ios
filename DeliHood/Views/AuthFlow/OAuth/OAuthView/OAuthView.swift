@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OAuthView: View {
-    @EnvironmentObject var authState: AuthStore
+    @EnvironmentObject var authStore: AuthStore
     var parentVm: OAuthVMProtocol
     
     @StateObject var vm = OAuthViewModel()
@@ -29,7 +29,7 @@ struct OAuthView: View {
                             
                             //User logged in
                             if result {
-                                await authState.updateState()
+                                await authStore.updateState()
                             }
                         }
                     }label: {

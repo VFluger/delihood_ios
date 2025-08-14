@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RegisterView: View {
     
-    @EnvironmentObject var authState: AuthStore
+    @EnvironmentObject var authStore: AuthStore
     @StateObject var vm = RegisterViewModel()
     
     var body: some View {
@@ -29,7 +29,7 @@ struct RegisterView: View {
             case 1:
                 EmailAndPhoneView(vm: vm)
             case 2:
-                PasswordView(vm: vm, authState: authState)
+                PasswordView(vm: vm, authStore: authStore)
             default:
                 //Error
                 EmptyView()
@@ -66,6 +66,7 @@ struct RegisterView: View {
             .padding()
         }
         .padding()
+        .noConnectionOverlay($vm.hasNoConnection, retryFnc: vm.registerUser)
         .alert(item: $vm.alertItem) {alert in
             Alert(title: Text(alert.title), message: Text(alert.description))
         }

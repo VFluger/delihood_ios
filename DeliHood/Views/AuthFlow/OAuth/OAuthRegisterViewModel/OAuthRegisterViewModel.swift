@@ -25,13 +25,13 @@ final class OAuthRegisterViewModel: ObservableObject {
         }
     }
     
-    func register (authState: AuthStore, userData: GoogleRegistrationData) async {
+    func register (authStore: AuthStore, userData: GoogleRegistrationData) async {
             Task {
                 isLoading = true
                 do {
                     try await AuthManager.shared.register(email: userData.email, phone: phone, name: userData.username)
                     try await NetworkManager.shared.postGoogleToken(token: userData.token)
-                    await authState.updateState()
+                    await authStore.updateState()
                     withAnimation(.easeOut) {
                         isLoading = false
                     }

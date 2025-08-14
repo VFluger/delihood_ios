@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ResettingPasswordView: View {
-    @EnvironmentObject var authState: AuthStore
+    @EnvironmentObject var authStore: AuthStore
     
     @StateObject var vm = ResettingPasswordViewModel()
     
@@ -21,13 +21,13 @@ struct ResettingPasswordView: View {
                 .padding()
             Spacer()
             
-            ResetPasswordView(vm: vm, authState: authState)
+            ResetPasswordView(vm: vm, authStore: authStore)
             
-            ConfirmPasswordView(vm: vm, authState: authState)
+            ConfirmPasswordView(vm: vm, authStore: authStore)
             
             Button {
                 Task {
-                    vm.resetPassword(token: authState.resetPasswordToken ?? "")
+                    vm.resetPassword(token: authStore.resetPasswordToken ?? "")
                 }
             }label: {
                 BrandBtn(text: "Reset Password",
@@ -43,7 +43,7 @@ struct ResettingPasswordView: View {
                 // Log out user
                 withAnimation(.easeOut) {
                     AuthManager.shared.logout()
-                    authState.appState = .loggedOut
+                    authStore.appState = .loggedOut
                 }
             })
         }
@@ -52,14 +52,14 @@ struct ResettingPasswordView: View {
 
 struct ConfirmPasswordView: View {
     @ObservedObject var vm: ResettingPasswordViewModel
-    @ObservedObject var authState: AuthStore
+    @ObservedObject var authStore: AuthStore
     
     var body: some View {
         SecureField("Confirm Password", text: $vm.confirmPassword)
             .brandStyle(isFieldValid: vm.isConfirmPasswordValid)
             .onSubmit {
                 Task {
-                    vm.resetPassword(token: authState.resetPasswordToken ?? "")
+                    vm.resetPassword(token: authStore.resetPasswordToken ?? "")
                 }
             }
             .onChange(of: vm.confirmPassword) {oldValue, newValue in
@@ -77,7 +77,7 @@ struct ConfirmPasswordView: View {
 
 struct ResetPasswordView: View {
     @ObservedObject var vm: ResettingPasswordViewModel
-    @ObservedObject var authState: AuthStore
+    @ObservedObject var authStore: AuthStore
     
     var body: some View {
         SecureField("Password", text: $vm.password)

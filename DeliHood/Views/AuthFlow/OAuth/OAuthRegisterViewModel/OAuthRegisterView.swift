@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OAuthRegisterView: View {
-    @EnvironmentObject var authState: AuthStore
+    @EnvironmentObject var authStore: AuthStore
     
     var userData: GoogleRegistrationData
     
@@ -66,7 +66,7 @@ struct OAuthRegisterView: View {
                 
                 Button {
                     Task {
-                        await vm.register(authState: authState, userData: userData)
+                        await vm.register(authStore: authStore, userData: userData)
                     }
                 }label: {
                     BrandBtn(text: "Finish registration", disabled: !vm.canProceed, width: 325)

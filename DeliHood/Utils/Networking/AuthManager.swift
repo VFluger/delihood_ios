@@ -27,7 +27,9 @@ class AuthManager {
                 throw AuthError.saveTokensFailed
             }
         } catch {
-            throw AuthError.wrongPassOrMail
+            // Check if wrong password or mail
+                let decode = try JSONDecoder().decode(WrongPassOrMailResp.self, from: data)
+                throw AuthError.wrongPassOrMail
         }
         
     }

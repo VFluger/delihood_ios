@@ -14,13 +14,13 @@ enum HandledUrlSchemePath: String {
 
 @main
 struct DeliHoodApp: App {
-    @StateObject var authState = AuthStore()
+    @StateObject var authStore = AuthStore()
     
     var body: some Scene {
         WindowGroup {
             ZStack {
                 MainScreenView()
-                    .environmentObject(authState)
+                    .environmentObject(authStore)
             }
             .onOpenURL { url in
                 handleIncomingURL(url)
@@ -37,23 +37,23 @@ struct DeliHoodApp: App {
                     //Unknown error
                     return
                 }
-                authState.resetPasswordToken = token!
-                authState.appState = .resetingPassword
+                authStore.resetPasswordToken = token!
+                authStore.appState = .resetingPassword
                 break
             case HandledUrlSchemePath.confirmMail.rawValue:
-                authState.appState = .validatingMail
+                authStore.appState = .validatingMail
                 let token = url.getToken()
                 guard token != nil else {
-                    authState.appState = .emailNotVerified
+                    authStore.appState = .emailNotVerified
                     return
                 }
                 Task {
                     do {
                         try await NetworkManager.shared.postConfirmMail(token: token ?? "")
-                        await authState.updateState()
+                        await authStore.updateState()
                     }catch {
                         print(error)
-                        authState.appState = .emailNotVerified
+                        authStore.appState = .emailNotVerified
                         return
                     }
                 }

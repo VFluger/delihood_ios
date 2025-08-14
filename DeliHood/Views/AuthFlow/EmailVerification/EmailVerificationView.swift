@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct EmailVerificationView: View {
-    @EnvironmentObject var authState: AuthStore
+    @EnvironmentObject var authStore: AuthStore
     
     @StateObject var vm = EmailVerificationViewModel()
     
@@ -53,8 +53,8 @@ struct EmailVerificationView: View {
                     .frame(width: 20)
                 Button {
                     AuthManager.shared.logout()
-                    authState.appState = .loggedOut
-                    authState.user = nil
+                    authStore.appState = .loggedOut
+                    authStore.user = nil
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }label: {
                     Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")

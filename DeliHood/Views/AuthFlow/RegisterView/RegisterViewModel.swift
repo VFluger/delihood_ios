@@ -20,6 +20,7 @@ final class RegisterViewModel: ObservableObject, OAuthVMProtocol {
     @Published var isConsent = false
     
     @Published var isLoading = false
+    @Published var hasNoConnection = false
     
     @Published var alertItem: AlertItem?
     
@@ -43,25 +44,28 @@ final class RegisterViewModel: ObservableObject, OAuthVMProtocol {
     //Register, then log in, if error, show the alertItem
     func registerUser() async {
         isLoading = true
-        Task {
             do {
                 try await AuthManager.shared.register(email: email, password: password, phone: phoneNum, name: username)
                 try await AuthManager.shared.login(email: email,
                                                    password: password)
                 isLoading = false
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } catch {
-                switch error {
-                case AuthError.userAlreadyInDb:
-                    alertItem = AlertContext.userAlreadyInDb
-                case AuthError.cannotGetToken:
-                    alertItem = AlertContext.failRegister
-                default:
-                    alertItem = AlertContext.failRegister
+                
+            }catch {
+                if let urlError = error as? URLError, urlError.code == .notConnectedToInternet {
+                    hasNoConnection = true
+                } else {
+                    switch error {
+                    case AuthError.userAlreadyInDb:
+                        alertItem = AlertContext.userAlreadyInDb
+                    case AuthError.cannotGetToken:
+                        alertItem = AlertContext.failRegister
+                    default:
+                        alertItem = AlertContext.failRegister
+                    }
                 }
                 isLoading = false
                 UINotificationFeedbackGenerator().notificationOccurred(.warning)
             }
-        }
     }
 }

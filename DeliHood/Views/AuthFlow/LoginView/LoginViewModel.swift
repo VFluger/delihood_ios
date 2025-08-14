@@ -16,6 +16,7 @@ final class LoginViewModel: ObservableObject, OAuthVMProtocol {
     @Published var isPasswordValid = true
     
     @Published var alertItem: AlertItem?
+    @Published var hasNoConnection = false
     @Published var isForgottenSheetPresented = false
     
     var canProceed: Bool {
@@ -29,20 +30,19 @@ final class LoginViewModel: ObservableObject, OAuthVMProtocol {
                 //SUCESS: LOGGED IN
                 print("logged in")
                 
-            } catch let authError as AuthError {
-                UINotificationFeedbackGenerator().notificationOccurred(.warning)
-                switch authError {
-                case .wrongPassOrMail:
-                    alertItem = AlertContext.wrongPassOrMail
-                
-                case .networkError(_):
-                    alertItem = AlertContext.networkFail
-                
-                default:
-                    alertItem = AlertContext.failLogin
+            }catch {
+                if let urlError = error as? URLError, urlError.code == .notConnectedToInternet {
+                    hasNoConnection = true
+                } else {
+                    switch error {
+                    case AuthError.networkError(_):
+                        alertItem = AlertContext.networkFail
+                    case AuthError.wrongPassOrMail:
+                        alertItem = AlertContext.wrongPassOrMail
+                    default:
+                        alertItem = AlertContext.failLogin
+                    }
                 }
-            } catch {
-                alertItem = AlertContext.failLogin
             }
     }
 }

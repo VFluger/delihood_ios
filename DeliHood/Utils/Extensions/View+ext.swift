@@ -25,4 +25,14 @@ extension View {
                 }
             }
     }
+    func noConnectionOverlay(_ show: Binding<Bool>, retryFnc: @escaping () async -> Void) -> some View {
+        self
+            .fullScreenCover(isPresented: show) {
+                ZStack {
+                    Color.black.opacity(0.5).ignoresSafeArea()
+                    NoConnectionOverlayView(show: show, retryFnc: retryFnc)
+                        .transition(.move(edge: .bottom))
+                }
+            }
+    }
 }

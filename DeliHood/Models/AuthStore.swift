@@ -1,5 +1,5 @@
 //
-//  AuthState.swift
+//  AuthStore.swift
 //  DeliHood
 //
 //  Created by Vojta Fluger on 12.08.2025.
@@ -10,6 +10,7 @@ import SwiftUI
 
 enum AppState {
     case loading
+    case noConnection
     case emailNotVerified
     case validatingMail
     case resetingPassword
@@ -29,21 +30,32 @@ class AuthStore: ObservableObject {
         }
     }
     func updateState() async {
-            do {
-                user = try await NetworkManager.shared.getMe()
-                withAnimation(.easeOut) {
-                    appState = .loggedIn
-                }
-            } catch {
-                print(error)
-                withAnimation(.easeOut) {
-                    switch error {
-                    case AuthError.emailNotVerified:
-                        appState = .emailNotVerified
-                    default:
-                        appState = .loggedOut
-                    }
+        do {
+            user = try await NetworkManager.shared.getMe()
+            withAnimation(.easeOut) {
+                appState = .loggedIn
+            }
+        } catch {
+            print(error)
+            if let urlError = error as? URLError {
+                if urlError.code == .notConnectedToInternet {
+                    appState = .noConnection
+                    return
                 }
             }
+            withAnimation(.easeOut) {
+                switch error {
+                case AuthError.emailNotVerified:
+                    appState = .emailNotVerified
+                default:
+                    appState = .loggedOut
+                }
+            }
+        }
+    }
+    func syncUpdateState() {
+        Task {
+            await self.updateState()
+        }
     }
 }

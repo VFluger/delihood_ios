@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct MainScreenView: View {
-    @EnvironmentObject var authState: AuthStore
+    @EnvironmentObject var authStore: AuthStore
     
     var body: some View {
         VStack {
-            switch authState.appState {
+            switch authStore.appState {
             case .loading:
                 ProgressView()
                     .scaleEffect(2)
@@ -32,6 +32,8 @@ struct MainScreenView: View {
                 Text("Validating mail...")
             case .resetingPassword:
                 ResettingPasswordView()
+            case .noConnection:
+                NoConnectionView(retryFnc: authStore.syncUpdateState)
             }
         }
     }

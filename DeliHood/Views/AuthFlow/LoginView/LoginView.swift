@@ -13,7 +13,7 @@ enum FocusedField {
 }
 
 struct LoginView: View {
-    @EnvironmentObject var authState: AuthStore
+    @EnvironmentObject var authStore: AuthStore
     
     @StateObject var vm = LoginViewModel()
     
@@ -38,7 +38,7 @@ struct LoginView: View {
             
             EmailTextView(vm: vm, focusedField: $focusedField)
             
-            PasswordTextView(authState: authState, vm: vm, focusedField: $focusedField)
+            PasswordTextView(authStore: authStore, vm: vm, focusedField: $focusedField)
             
             Button {
                 vm.isForgottenSheetPresented.toggle()
@@ -51,7 +51,7 @@ struct LoginView: View {
             Button {
                 Task {
                     await vm.loginUser()
-                    await authState.updateState()
+                    await authStore.updateState()
                 }
             }label: {
                 Text("Sign in")
@@ -75,6 +75,7 @@ struct LoginView: View {
             return Alert(title: Text(alert.title), message: Text(alert.description), dismissButton: .default(Text("Ok")))
             
         }
+        .noConnectionOverlay($vm.hasNoConnection, retryFnc: vm.loginUser)
         
     }
 }
@@ -110,7 +111,7 @@ struct EmailTextView: View {
 }
 
 struct PasswordTextView: View {
-    @ObservedObject var authState: AuthStore
+    @ObservedObject var authStore: AuthStore
     @ObservedObject var vm: LoginViewModel
     
     @FocusState.Binding var focusedField: FocusedField?
@@ -134,7 +135,7 @@ struct PasswordTextView: View {
                 //SUBMIT
                 Task {
                     await vm.loginUser()
-                    await authState.updateState()
+                    await authStore.updateState()
                 }
             }
             .submitLabel(.send)
