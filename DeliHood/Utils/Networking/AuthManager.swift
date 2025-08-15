@@ -11,7 +11,8 @@ import SimpleKeychain
 class AuthManager {
     static let shared = AuthManager()
     
-    private let authDomain = "https://delihood-backend.onrender.com"
+//    private let authDomain = "https://delihood-backend.onrender.com"
+    private let authDomain = "http://localhost:8080"
     
     private let keychain = SimpleKeychain(service: "com.VFluger.DeliHood", synchronizable: true)
     private init() {}

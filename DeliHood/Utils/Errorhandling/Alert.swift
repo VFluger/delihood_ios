@@ -33,4 +33,7 @@ enum AlertContext {
     static let forgottenPasswordSend = AlertItem(title: "Check your email", description: "If this email was registered, you should receive an email with a reset link.")
     static let resetPassSuccess = AlertItem(title: "Password reset successful", description: "Password was reset successfully. You can now log in with your new password.")
     static let resetPassFail = AlertItem(title: "Password reset failed", description: "Cannot reset password at the moment, please try again.")
+    
+    //MARK: - Generic
+    static let cannotGetData = AlertItem(title: "Cannot get data", description: "Cannot get data from the server, please try again later.")
 }

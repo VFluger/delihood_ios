@@ -58,3 +58,8 @@ struct GoogleSignRegisterResponse: Decodable {
 struct WrongPassOrMailResp: Decodable {
     let isIncorrectPasswordOrUser: Bool
 }
+
+struct HomeViewResponse: Decodable {
+    var success: Bool
+    var data: [Cook]
+}

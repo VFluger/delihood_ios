@@ -13,7 +13,8 @@ enum AuthResult {
 }
 
 class NetworkManager {
-    let baseURL = "https://delihood-backend.onrender.com"
+//    let baseURL = "https://delihood-backend.onrender.com"
+    let baseURL = "http://localhost:8080"
     
     static let shared = NetworkManager()
     
@@ -28,6 +29,18 @@ class NetworkManager {
         return try JSONDecoder().decode(getUserHelper.self, from: data).data
     }
     
+    
+    //MARK: - Main Get Of Content
+    func getMainScreen() async throws -> HomeViewResponse {
+        let (data, _ ) = try await NetworkManager.shared.get(path: "/testing-data")
+        
+        do {
+            let decodedData = try JSONDecoder().decode(HomeViewResponse.self, from: data)
+            return decodedData
+        }catch {
+            throw AuthError.cannotDecode
+        }
+    }
     
     @discardableResult
     func postGoogleToken(token: String) async throws -> AuthResult {
