@@ -10,6 +10,8 @@ import RemoteImage
 
 struct FoodListView: View {
     let food: Food
+    let cook: Cook
+    @State var showDetail: Bool = false
     
     var body: some View {
             HStack {
@@ -36,18 +38,7 @@ struct FoodListView: View {
                         .lineLimit(2)
                         
                     //Converting to CategoryContext
-                    if let categoryEnum = CategoryContext(rawValue: food.category) {
-                        HStack {
-                            Image(categoryEnum.iconName)
-                                .resizable()
-                                .renderingMode(.template)
-                                .foregroundStyle(.primary)
-                                .scaledToFit()
-                                .frame(width: 20, height: 20)
-                            
-                            Text(categoryEnum.name)
-                        }
-                    }
+                    CategoryView(string: food.category)
                     Spacer()
                 }
                 .frame(height: 80)
@@ -61,10 +52,16 @@ struct FoodListView: View {
                 .padding()
             }
             .padding(.vertical, 2)
+            .onTapGesture {
+                showDetail = true
+            }
+            .sheet(isPresented: $showDetail) {
+                FoodDetailView(food: food, cook: cook)
+            }
         }
 }
 
 #Preview {
-    FoodListView(food: Food(id: 1, name: "Pizza", description: "Pizza na pile asdf asdf asdf afd asdf", category: "italien", price: 100, imageUrl: "https://www.abeautifulplate.com/wp-content/uploadasdfs/2015/08/the-best-homemade-margherita-pizza-1-4.jpg"))
+    FoodListView(food: Food(id: 1, name: "Pizza", description: "Pizza na pile asdf asdf asdf afd asdf", category: "italien", price: 100, imageUrl: "https://www.abeautifulplate.com/wp-content/uploadasdfs/2015/08/the-best-homemade-margherita-pizza-1-4.jpg"), cook: MockData.sampleCook)
 }
 

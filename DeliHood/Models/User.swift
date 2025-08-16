@@ -16,5 +16,6 @@ struct User: Codable {
     let username: String
     let email: String
     let phone: String
+    let imageUrl: String?
     let created_at: String
 }

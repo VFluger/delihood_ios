@@ -15,7 +15,7 @@ struct NoConnectionView: View {
     var body: some View {
         VStack {
             Text("No internet connection")
-                .font(.largeTitle)
+                .font(.title)
                 .fontWeight(.semibold)
                 .padding()
             Spacer()
@@ -23,7 +23,7 @@ struct NoConnectionView: View {
             Image(systemName: "wifi.slash")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 150)
+                .frame(width: 100)
                 .symbolEffect(.drawOn, isActive: animateIcon)
             Spacer()
                 .frame(height: 50)

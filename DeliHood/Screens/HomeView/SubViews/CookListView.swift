@@ -78,7 +78,7 @@ struct CookListView: View {
                 if isExpanded {
                     VStack(alignment: .leading, spacing: 4) {
                         ForEach(filteredFoods) { food in
-                            FoodListView(food: food)
+                            FoodListView(food: food, cook: cook)
                                 .padding(.bottom, 10)
                         }
                     }

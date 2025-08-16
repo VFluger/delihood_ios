@@ -36,9 +36,9 @@ struct OAuthRegisterView: View {
             
             VStack(alignment: .leading, spacing: 10) {
                 Label(userData.username, systemImage: "person")
-                    .foregroundStyle(.brand)
+//                    .foregroundStyle(.brand)
                 Label(userData.email, systemImage: "envelope")
-                    .foregroundStyle(.brand)
+//                    .foregroundStyle(.brand)
             }
             .font(.headline)
             .fontWeight(.regular)
@@ -60,8 +60,7 @@ struct OAuthRegisterView: View {
                 
                 FieldWarningView(isFieldValid: vm.isPhoneValid, warningText: WarningMessages.phoneWarningText)
                 
-                Toggle("Agree to Terms and Conditions", isOn: $vm.isConsent)
-                    .toggleStyle(iOSCheckboxToggleStyle())
+                CheckboxView(isChecked: $vm.isConsent, text: "Accept terms and conditions")
                     .padding(.bottom, 20)
                 
                 Button {

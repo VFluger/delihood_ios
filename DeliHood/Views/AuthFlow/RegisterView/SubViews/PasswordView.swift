@@ -58,8 +58,7 @@ struct PasswordView: View {
         FieldWarningView(isFieldValid: isConfirmValid,
                          warningText: WarningMessages.confirmPassWarningText)
         
-        Toggle("Accept Terms of Service", isOn: $vm.isConsent)
-            .toggleStyle(iOSCheckboxToggleStyle())
+        CheckboxView(isChecked: $vm.isConsent, text: "Accept Terms of Service")
             .padding()
             .foregroundStyle(Color(UIColor.label))
         Spacer()

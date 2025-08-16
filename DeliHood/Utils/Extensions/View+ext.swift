@@ -27,12 +27,10 @@ extension View {
     }
     func noConnectionOverlay(_ show: Binding<Bool>, retryFnc: @escaping () async -> Void) -> some View {
         self
-            .fullScreenCover(isPresented: show) {
-                ZStack {
-                    Color.black.opacity(0.5).ignoresSafeArea()
-                    NoConnectionOverlayView(show: show, retryFnc: retryFnc)
+            .sheet(isPresented: show) {
+                    NoConnectionView(retryFnc: retryFnc)
+                        .presentationDetents([.height(400)])
                         .transition(.move(edge: .bottom))
-                }
             }
     }
 }

@@ -59,7 +59,7 @@ struct CookDetailView: View {
                         .padding(.top, 40)
                         .padding(.bottom, 20)
                     ForEach(cook.foods) {food in
-                        FoodListView(food: food)
+                        FoodListView(food: food, cook: cook)
                             .padding(.bottom)
                     }
                 }
