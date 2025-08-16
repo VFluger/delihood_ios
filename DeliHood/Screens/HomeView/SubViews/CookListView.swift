@@ -96,5 +96,5 @@ struct CookListView: View {
     }
 }
 #Preview {
-    CookListView(cook: Cook(id: 1, name: "Testing Cook", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm22VjO_TCWRKrcNuDNMsZ_-ImiEbzGICJVg&s", location_lat: 12.1, location_lng: 12.1, foods: [Food(id: 2, name: "Testing Food", description: "testing description", category: "asian", price: 100, imageUrl: "https://www.example.com/image.jpg")]), selectedFilter: .constant(nil), searchText: .constant(""))
+    CookListView(cook: MockData.sampleCook, selectedFilter: .constant(nil), searchText: .constant(""))
 }

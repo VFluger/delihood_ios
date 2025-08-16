@@ -8,10 +8,11 @@
 import Foundation
 
 struct Cook: Identifiable, Decodable {
-    var id: Int
-    var name: String
-    var imageUrl: String?
-    var location_lat: Double
-    var location_lng: Double
-    var foods: [Food]
+    let id: Int
+    let name: String
+    let description: String
+    let imageUrl: String?
+    let location_lat: Double
+    let location_lng: Double
+    let foods: [Food]
 }

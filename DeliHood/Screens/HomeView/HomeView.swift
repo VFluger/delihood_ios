@@ -16,13 +16,15 @@ struct HomeView: View {
         NavigationView {
             VStack {
                     ScrollView {
-                        if vm.alertItem == nil {
-                            ForEach(vm.mainScreenData ?? []) {cook in
-                                CookListView(cook: cook, selectedFilter: $vm.selectedFilter, searchText: $vm.searchText)
-                                
+                        LazyVStack {
+                            if vm.alertItem == nil {
+                                ForEach(vm.mainScreenData ?? []) {cook in
+                                    CookListView(cook: cook, selectedFilter: $vm.selectedFilter, searchText: $vm.searchText)
+                                    
+                                }
+                            }else {
+                                ErrorView()
                             }
-                        }else {
-                            ErrorView()
                         }
                     }
                     .refreshable {
@@ -30,7 +32,7 @@ struct HomeView: View {
                     }
                     Spacer()
                 }
-            .navigationTitle(vm.alertItem == nil ? vm.searchText != "" ? "Search" : "Home" : "Error")
+            .navigationTitle(vm.alertItem == nil ? "Home" : "Error")
         }
         .overlay {
             VStack {
