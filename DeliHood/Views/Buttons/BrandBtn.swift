@@ -14,7 +14,7 @@ struct BrandBtn: View {
     
     var body: some View {
         Text(text)
-            .foregroundStyle(Color(UIColor.label).opacity(disabled ? 0.5 : 1))
+            .foregroundStyle(Color.label.opacity(disabled ? 0.5 : 1))
             .fontWeight(.semibold)
             .frame(minWidth: width ?? 50, minHeight: 20)
             .padding()
@@ -34,7 +34,7 @@ struct BrandIconBtn: View {
         Image(systemName: imageName)
             .resizable()
             .scaledToFit()
-            .foregroundStyle(Color(UIColor.label).opacity(disabled ? 0.5 : 1))
+            .foregroundStyle(Color.label.opacity(disabled ? 0.5 : 1))
             .frame(width: 50, height: 20)
             .fontWeight(.semibold)
             .padding()

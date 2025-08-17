@@ -51,7 +51,7 @@ struct CookListView: View {
                             Text(cook.name)
                                 .font(.headline)
                                 .minimumScaleFactor(0.5)
-                                .foregroundStyle(Color(UIColor.label))
+                                .foregroundStyle(Color.label)
                         })
                         
                         Spacer()

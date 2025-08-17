@@ -55,7 +55,7 @@ struct FoodDetailView: View {
                         Text(cook.name)
                             .minimumScaleFactor(0.5)
                             .padding(.horizontal, 5)
-                            .foregroundStyle(Color(UIColor.label))
+                            .foregroundStyle(Color.label)
                     })
                     
                 }
@@ -96,7 +96,7 @@ struct FoodDetailView: View {
                     ZStack(alignment: .topLeading) {
                         if vm.notes.isEmpty {
                             Text("eg. no olives, vegan or extra spicy")
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.gray)
                                 .padding(.horizontal, 15)
                                 .padding(.vertical, 15)
                                 .zIndex(1)

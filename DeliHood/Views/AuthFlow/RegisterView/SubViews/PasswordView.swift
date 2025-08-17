@@ -60,7 +60,7 @@ struct PasswordView: View {
         
         CheckboxView(isChecked: $vm.isConsent, text: "Accept Terms of Service")
             .padding()
-            .foregroundStyle(Color(UIColor.label))
+            .foregroundStyle(Color.label)
         Spacer()
             .frame(height: 40)
         

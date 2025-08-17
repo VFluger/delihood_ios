@@ -30,7 +30,7 @@ struct EmailVerificationView: View {
             }label: {
                 Label("Open mail app", systemImage: "envelope.badge")
                     .padding()
-                    .foregroundStyle(Color(UIColor.label))
+                    .foregroundStyle(Color.label)
                     .brandGlassEffect()
             }
             Spacer()
@@ -59,7 +59,7 @@ struct EmailVerificationView: View {
                 }label: {
                     Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
                         .padding()
-                        .foregroundStyle(Color(UIColor.label))
+                        .foregroundStyle(Color.label)
                         .glassEffect(.clear.interactive())
                 }
             }

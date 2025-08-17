@@ -11,7 +11,6 @@ struct HomeView: View {
     @EnvironmentObject var authStore: AuthStore
     
     @StateObject var vm = HomeViewModel()
-    @State private var showAccountSheet = false
     
     var body: some View {
         NavigationView {
@@ -36,20 +35,12 @@ struct HomeView: View {
             .navigationTitle(vm.alertItem == nil ? "Home" : "Error")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showAccountSheet = true
-                    } label: {
+                    NavigationLink(destination: AccountView()) {
                         CustomRemoteImage(UrlString: authStore.user?.imageUrl) {
                             Image(systemName: "person")
                                 .foregroundStyle(.primary)
                         }
-                        .frame(width: 30, height: 30)
                     }
-                }
-            }
-            .sheet(isPresented: $showAccountSheet) {
-                NavigationView {
-                    AccountView()
                 }
             }
         }

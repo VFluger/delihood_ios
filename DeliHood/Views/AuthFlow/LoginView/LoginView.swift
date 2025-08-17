@@ -58,7 +58,7 @@ struct LoginView: View {
                     .frame(width: 325)
                     .font(.title2)
                     .padding()
-                    .foregroundStyle(Color(UIColor.label))
+                    .foregroundStyle(Color.label)
                     .bold()
                     .brandGlassEffect(interactive: vm.canProceed)
                     .opacity(vm.canProceed ? 1 : 0.5)

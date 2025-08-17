@@ -63,3 +63,7 @@ struct HomeViewResponse: Decodable {
     var success: Bool
     var data: [Cook]
 }
+
+struct EditAccField: Encodable {
+    var newValue: String
+}

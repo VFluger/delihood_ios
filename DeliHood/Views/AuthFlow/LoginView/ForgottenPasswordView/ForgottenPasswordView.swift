@@ -19,14 +19,7 @@ struct ForgottenPasswordView: View {
                 Button {
                     isPresented = false
                 }label: {
-                    Image(systemName: "xmark")
-                        .frame(width: 30, height: 30)
-                        .foregroundStyle(Color(UIColor.label))
-                        .padding()
-                        .glassEffect(
-                            .clear
-                                .interactive()
-                        )
+                    dismissXBtn()
                 }.padding()
             }
             VStack {

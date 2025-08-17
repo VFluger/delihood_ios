@@ -12,10 +12,11 @@ struct getUserHelper: Codable {
     let data: User
 }
 
+// var because can be changes in settings
 struct User: Codable {
-    let username: String
-    let email: String
-    let phone: String
-    let imageUrl: String?
-    let created_at: String
+    var username: String
+    var email: String
+    var phone: String
+    var imageUrl: String?
+    var created_at: String
 }

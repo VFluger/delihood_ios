@@ -47,7 +47,7 @@ struct OAuthView: View {
                         Image(systemName: "apple.logo")
                             .resizable()
                             .scaledToFit()
-                            .foregroundStyle(Color(UIColor.label))
+                            .foregroundStyle(Color.label)
                             .frame(width: 30, height: 30)
                             .padding()
                             .background(.brand.opacity(0.2))

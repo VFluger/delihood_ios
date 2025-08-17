@@ -30,6 +30,11 @@ class NetworkManager {
     }
     
     
+    func changeAccSetting(_ value: String, type: EditFieldKey) async throws {
+        try await NetworkManager.shared.genericPost(path: "/api/change/\(type.rawValue)", body: EditAccField(newValue: value))
+        
+    }
+    
     //MARK: - Main Get Of Content
     func getMainScreen() async throws -> HomeViewResponse {
         let (data, _ ) = try await NetworkManager.shared.get(path: "/testing-data")

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 enum HandledUrlSchemePath: String {
     case resetPassword = "/auth/new-password"
@@ -25,6 +26,7 @@ struct DeliHoodApp: App {
             .onOpenURL { url in
                 handleIncomingURL(url)
             }
+            .modelContainer(for: Location.self)
         }
     }
     
