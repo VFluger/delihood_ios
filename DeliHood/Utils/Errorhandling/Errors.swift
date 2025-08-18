@@ -17,6 +17,7 @@ enum AuthError: Error {
     case userAlreadyInDb
     case emailNotVerified
     case refreshFailed
+    case duplicateValue
 }
 
 enum GenericError: Error {

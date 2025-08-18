@@ -7,10 +7,10 @@ enum EditFieldKey: String {
     case deliveryAddress
 }
 
+@MainActor
 final class EditFieldViewModel: ObservableObject {
     @Published var title: String
     @Published var fieldKey: EditFieldKey
-    @Published var currentValue: String
     @Published var newValue: String
     @Published var alertItem: AlertItem?
     
@@ -31,13 +31,12 @@ final class EditFieldViewModel: ObservableObject {
     init(title: String, fieldKey: EditFieldKey, currentValue: String) {
         self.title = title
         self.fieldKey = fieldKey
-        self.currentValue = currentValue
         self.newValue = currentValue
     }
     
-    func save(dismiss: @escaping () -> Void) {
-        if currentValue == newValue { return } //dismiss() }
-        if fieldKey == .deliveryAddress { return } //dismiss() }
+    func save(currentValue: Binding<String>, dismiss: @escaping () -> Void) {
+        if currentValue.wrappedValue == newValue { return dismiss() }
+        if fieldKey == .deliveryAddress { return }
         if newValue.isEmpty {
             alertItem = AlertContext.invalidValue
             return
@@ -45,10 +44,16 @@ final class EditFieldViewModel: ObservableObject {
         Task {
             do {
                 try await NetworkManager.shared.changeAccSetting(newValue, type: fieldKey)
-                currentValue = newValue
-                //dismiss()
+                currentValue.wrappedValue = newValue
+                dismiss()
             } catch {
                 print(error)
+                if let authError = error as? AuthError {
+                    if case .duplicateValue = authError {
+                        alertItem = AlertContext.duplicateValue
+                        return
+                    }
+                }
                 alertItem = AlertContext.networkFail
             }
         }

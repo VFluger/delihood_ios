@@ -4,6 +4,7 @@ import SwiftUI
 
 struct EditFieldView: View {
     @StateObject var vm: EditFieldViewModel
+    @Binding var currentValue: String
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -12,15 +13,15 @@ struct EditFieldView: View {
                 Text(vm.title)
                     .font(.headline)
                     .foregroundColor(.secondary)
-                    TextField(vm.currentValue, text: $vm.newValue)
+                TextField(currentValue, text: $vm.newValue)
                         .brandStyle(isFieldValid: vm.isValid)
                         .autocorrectionDisabled()
                         .padding()
             }
 
-            Button(action: {
-                vm.save { dismiss() }
-            }) {
+            Button{
+                vm.save(currentValue: $currentValue) { dismiss() }
+            }label: {
                 BrandBtn(text: "Save", width: 325)
             }
 
@@ -37,6 +38,6 @@ struct EditFieldView: View {
 
 #Preview {
     NavigationStack {
-        EditFieldView(vm: .init(title: "Edit Name", fieldKey:  .name, currentValue: "Jane Doe"))
+        EditFieldView(vm: .init(title: "Edit Name", fieldKey:  .name, currentValue: "Jane Doe"), currentValue: .constant("Jane Doe"))
     }
 }

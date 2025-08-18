@@ -36,6 +36,7 @@ enum AlertContext {
     
     //MARK: - Generic
     static let cannotGetData = AlertItem(title: "Cannot get data", description: "Cannot get data from the server, please try again later.")
-    //MARK: - Invalid value
+    //MARK: - Invalid and duplicate values
     static let invalidValue = AlertItem(title: "Invalid value", description: "This value is not valid. Check if it contains only allowed symbols.")
+    static let duplicateValue = AlertItem(title: "Value not available", description: "User with this value already exists. Please try another one")
 }

@@ -94,7 +94,7 @@ class NetworkManager {
     func genericPost<T: Encodable>(path: String, body: T, sendJWT: Bool = true) async throws -> Data {
         let (data, response) = try await NetworkManager.shared.post(path: path, body: body, sendJWT: sendJWT)
         
-        guard let _ = response as? HTTPURLResponse else {
+        guard let httpResponse = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)
         }
         
@@ -212,8 +212,10 @@ class NetworkManager {
             }
         case 403:
             throw AuthError.emailNotVerified
+        case 409:
+            throw AuthError.duplicateValue
         default:
-            throw URLError(.badServerResponse)
+            throw AuthError.invalidResponse
         }
     }
 }

@@ -44,7 +44,7 @@ struct ChangeSettingsView: View {
         List {
             Section(header: Text("Account Info")) {
                 NavigationLink {
-                    EditFieldView(vm: EditFieldViewModel(title: "Edit name", fieldKey: .name, currentValue: usernameBinding.wrappedValue))
+                    EditFieldView(vm: EditFieldViewModel(title: "Edit name", fieldKey: .name, currentValue: usernameBinding.wrappedValue), currentValue: usernameBinding)
                 } label: {
                     HStack {
                         Text("Name")
@@ -54,7 +54,7 @@ struct ChangeSettingsView: View {
                     }
                 }
                 NavigationLink {
-                    EditFieldView(vm: EditFieldViewModel(title: "Edit email", fieldKey: .email, currentValue: emailBinding.wrappedValue))
+                    EditFieldView(vm: EditFieldViewModel(title: "Edit email", fieldKey: .email, currentValue: emailBinding.wrappedValue), currentValue: emailBinding)
                 } label: {
                     HStack {
                         Text("Email")
@@ -64,7 +64,7 @@ struct ChangeSettingsView: View {
                     }
                 }
                 NavigationLink {
-                    EditFieldView(vm: EditFieldViewModel(title: "Edit phone", fieldKey: .phone, currentValue: phoneBinding.wrappedValue))
+                    EditFieldView(vm: EditFieldViewModel(title: "Edit phone", fieldKey: .phone, currentValue: phoneBinding.wrappedValue), currentValue: phoneBinding)
                 } label: {
                     HStack {
                         Text("Phone Number")
@@ -125,11 +125,11 @@ struct ChangeSettingsView: View {
         }
         .sheet(item: $updateSheet) {location in
             UpdateAddressView(locationModel: location)
-                .presentationDetents([.height(800)])
+                .presentationDetents([.height(600)])
         }
         .sheet(isPresented: $addSheet) {
             AddLocationView()
-                .presentationDetents([.height(800)])
+                .presentationDetents([.height(600)])
         }
         .navigationTitle("Change Settings")
     }
