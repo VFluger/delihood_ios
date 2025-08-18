@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+@MainActor 
 final class FoodDetailViewModel: ObservableObject {
     @Published var food: Food
     @Published var cook: Cook
+    
+    @Published var showSuccess: Bool = false
     
     @AppStorage("order") var order: Data?
     
@@ -20,17 +23,19 @@ final class FoodDetailViewModel: ObservableObject {
     
     @Published var alertItem: AlertItem? = nil
     
-    init(food: Food, cook: Cook, isExtraNapkins: Bool = false, isExtraSalt: Bool = false, isGlutenFree: Bool = false, notes: String = "", alertItem: AlertItem? = nil) {
+    init(food: Food, cook: Cook) {
         self.food = food
         self.cook = cook
-        self.isExtraNapkins = isExtraNapkins
-        self.isExtraSalt = isExtraSalt
-        self.isGlutenFree = isGlutenFree
-        self.notes = notes
-        self.alertItem = alertItem
+        self.showSuccess = false
+        self.isExtraNapkins = false
+        self.isExtraSalt = false
+        self.isGlutenFree = false
+        self.notes = ""
+        self.alertItem = nil
     }
     
-    @MainActor func addToOrder(dismiss: @escaping () -> Void) {
+    func addToOrder(dismiss: @escaping () -> Void) {
+        print("ADDING TO ORDER")
         let orderItem = OrderItem(foodId: food.id, quantity: 1, name: food.name, price: food.price, note: notes)
         do {
             //Try to append to existing order
@@ -46,7 +51,14 @@ final class FoodDetailViewModel: ObservableObject {
             decodedOrder.cookId = cook.id
             let encodedOrder = try JSONEncoder().encode(decodedOrder)
             order = encodedOrder
-            dismiss()
+            
+            Task {
+                withAnimation {
+                    showSuccess = true
+                }
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                dismiss()
+            }
             
         }catch {
             print(error)
@@ -54,7 +66,14 @@ final class FoodDetailViewModel: ObservableObject {
             let newOrder = Order(id: UUID(), items: [orderItem], cookId: cook.id, status: .notOrdered, tip: 0)
             let encodedOrder = try? JSONEncoder().encode(newOrder)
             order = encodedOrder
-            dismiss()
+            
+            Task {
+                withAnimation {
+                    showSuccess = true
+                }
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                dismiss()
+            }
         }
     }
 }

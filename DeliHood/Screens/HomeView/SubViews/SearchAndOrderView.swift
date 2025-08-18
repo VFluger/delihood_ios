@@ -76,7 +76,9 @@ struct SearchAndOrderView: View {
                     }label: {
                         Label("•  Finish order", systemImage: "\(order?.items.count ?? 0).circle")
                             .foregroundStyle(Color.label)
+                            .fontWeight(.semibold)
                             .padding()
+                            .padding(.vertical, 5)
                             .frame(maxWidth: .infinity)
                             .brandGlassEffect()
                     }
@@ -103,10 +105,8 @@ struct SearchAndOrderView: View {
                 HStack {
                     if !(order?.items.isEmpty ?? true) {
                         Image(systemName: "xmark")
-                            .resizable()
-                            .scaledToFit()
                             .foregroundStyle(Color.label)
-                            .frame(width: 25)
+                            .frame(width: 25, height: 25)
                             .padding()
                             .glassEffect(.regular.interactive())
                             .onTapGesture {
@@ -137,7 +137,13 @@ struct SearchAndOrderView: View {
                 
             }
         }
-        .onChange(of: order?.items) { _ in
+        .onChange(of: order?.items) {
+            withAnimation {
+                isShowingOrderBtn = !(order?.items.isEmpty ?? true)
+            }
+        }
+        //When opening the app, check if show order btn
+        .onAppear {
             withAnimation {
                 isShowingOrderBtn = !(order?.items.isEmpty ?? true)
             }

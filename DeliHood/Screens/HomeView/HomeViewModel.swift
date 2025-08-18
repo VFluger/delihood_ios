@@ -20,17 +20,20 @@ final class HomeViewModel: ObservableObject {
     @Published var isLoading = false
     
     func getData() {
+        print("GETTING NEW DATA")
         isLoading = true
         Task {
             do {
                 mainScreenData = try await NetworkManager.shared.getMainScreen().data
                     //Order exists, filter only the cook thats with the same id
+                if let data = orderData {
                     do {
-                        let order = try JSONDecoder().decode(Order.self, from: orderData ?? Data())
+                        let order = try JSONDecoder().decode(Order.self, from: data)
                         mainScreenData = mainScreenData?.filter { $0.id == order.cookId }
                     }catch {
                         print("Order decoding failed, prolly no order")
                     }
+                }
                 isLoading = false
             }catch {
                 print(error)

@@ -141,6 +141,12 @@ struct FoodDetailView: View {
                 .padding(5)
             }
         }
+        .blur(radius: vm.showSuccess ? 10 : 0)
+        .overlay {
+            if vm.showSuccess {
+                FoodAddedToOrderView()
+            }
+        }
     }
 }
 
