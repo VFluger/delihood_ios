@@ -111,19 +111,6 @@ struct FoodDetailView: View {
                     
                 }.padding()
             }
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Quantity:")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding(.horizontal, 10)
-                Stepper(value: $quantity, in: 1...20) {
-                    Text("\(quantity)")
-                        .font(.headline)
-                        .padding(.horizontal, 15)
-                }
-                .padding(.horizontal, 10)
-                .padding(.bottom, 10)
-            }
         }
         .alert(item: $vm.alertItem) {alert in
             Alert(title: Text(alert.title), message: Text(alert.description))
@@ -131,11 +118,21 @@ struct FoodDetailView: View {
         //Add to order btn, favorite and share
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
-                Button {
-                    vm.addToOrder(quantity: quantity) { dismiss() }
-                }label: {
-                    
-                    BrandBtn(text: "Order • \(vm.food.price) Kč", width: 200)
+                if vm.itemQuantity != nil {
+                    QuantityBtn(
+                        quantity: Binding(
+                            get: { vm.itemQuantity ?? 1 },
+                            set: { vm.itemQuantity = $0 }
+                        ),
+                        vm: vm
+                    )
+            }else {
+                    Button {
+                        vm.addToOrder(quantity: quantity) { dismiss() }
+                    }label: {
+                        
+                        BrandBtn(text: "Order • \(vm.food.price) Kč", width: 200)
+                    }
                 }
             }
             .sharedBackgroundVisibility(.hidden)
@@ -161,6 +158,11 @@ struct FoodDetailView: View {
         .overlay {
             if vm.showSuccess {
                 FoodAddedToOrderView()
+            }
+        }
+        .onAppear {
+            if let quantity = vm.checkQuantity() {
+                vm.itemQuantity = quantity
             }
         }
     }

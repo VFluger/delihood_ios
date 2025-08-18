@@ -14,6 +14,8 @@ final class FoodDetailViewModel: ObservableObject {
     
     @Published var showSuccess: Bool = false
     
+    @Published var itemQuantity: Int? = nil
+    
     @AppStorage("order") var order: Data?
     
     @Published var isExtraNapkins = false
@@ -32,6 +34,23 @@ final class FoodDetailViewModel: ObservableObject {
         self.isGlutenFree = false
         self.notes = ""
         self.alertItem = nil
+        self.itemQuantity = nil
+    }
+    
+    func checkQuantity() -> Int? {
+        do {
+            if let order {
+                let decodedOrder = try JSONDecoder().decode(Order.self, from: order)
+                let indexOfItem = decodedOrder.items.firstIndex(where: { $0.foodId == food.id })
+                if let indexOfItem {
+                    return decodedOrder.items[indexOfItem].quantity
+                }
+                return nil
+            }
+        }catch {
+            print(error)
+        }
+        return nil
     }
     
     func addToOrder(quantity: Int = 1 , dismiss: @escaping () -> Void) {
@@ -48,7 +67,12 @@ final class FoodDetailViewModel: ObservableObject {
             // Check if food already in order
             if let existingIndex = decodedOrder.items.firstIndex(where: { $0.foodId == orderItem.foodId }) {
                 // Food already exists in order, increase quantity
-                decodedOrder.items[existingIndex].quantity += quantity
+                decodedOrder.items[existingIndex].quantity = quantity
+                
+                // If quantity 0, remove from order
+                if decodedOrder.items[existingIndex].quantity <= 0 {
+                    decodedOrder.items.remove(at: existingIndex)
+                }
             } else {
                 // Food not in order, append new item
                 decodedOrder.items.append(orderItem)
