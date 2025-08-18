@@ -10,6 +10,7 @@ struct HomeView: View {
     @EnvironmentObject var authStore: AuthStore
     @StateObject var vm = HomeViewModel()
     @State private var showAccount = false   // track navigation state
+    @State private var isOrderPresented = false
     
     var body: some View {
         NavigationStack {
@@ -55,13 +56,19 @@ struct HomeView: View {
                     VStack {
                         Spacer()
                         SearchAndOrderView(selectedFilter: $vm.selectedFilter,
-                                           searchText: $vm.searchText)
+                                           searchText: $vm.searchText, isOrderPresented: $isOrderPresented)
                         .padding()
                         .background(Gradient(colors: [.clear, .black.opacity(0.5)]))
                     }
                 }
             }
             .onAppear { vm.getData() }
+            .sheet(isPresented: $isOrderPresented) {
+                OrderFinishView()
+            }
+            .onChange(of: vm.orderData) {
+                            vm.getData()
+                        }
             .alert(item: $vm.alertItem) { alert in
                 Alert(title: Text(alert.title),
                       message: Text(alert.description),

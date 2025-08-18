@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum OrderStatus: String, Codable {
-//    'pending', 'paid', 'accepted', 'waiting for pickup', 'delivering', 'delivered'
+    case notOrdered
     case pending
     case paid
     case accepted
@@ -21,12 +21,14 @@ struct Order: Codable, Identifiable {
     var id: UUID
     var items: [OrderItem]
     
-    var deliveryLocationLat: Double
-    var deliveryLocationLng: Double
+    var cookId: Int?
+    
+    var deliveryLocationLat: Double?
+    var deliveryLocationLng: Double?
     
     var status: OrderStatus
     
-    var totalPrice: Double {
+    var totalPrice: Int {
         items.reduce(0) { $0 + $1.price }
     }
     var tip: Int

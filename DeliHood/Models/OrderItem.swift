@@ -14,7 +14,13 @@ struct OrderItem: Codable, Identifiable {
     var foodId: Int // Id from db
     var quantity: Int
     var name: String
-    var price: Double
+    var price: Int
     
     var note: String?
+}
+
+extension OrderItem: Equatable {
+    static func == (lhs: OrderItem, rhs: OrderItem) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

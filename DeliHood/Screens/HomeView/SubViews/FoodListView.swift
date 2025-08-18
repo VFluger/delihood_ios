@@ -56,7 +56,9 @@ struct FoodListView: View {
                 showDetail = true
             }
             .sheet(isPresented: $showDetail) {
-                FoodDetailView(food: food, cook: cook)
+                NavigationStack {
+                    FoodDetailView(vm: FoodDetailViewModel(food: food, cook: cook))
+                }
             }
         }
 }

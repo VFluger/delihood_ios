@@ -8,15 +8,13 @@
 import SwiftUI
 
 struct FoodDetailView: View {
-    var food: Food
-    var cook: Cook
-    
-    @StateObject var vm = FoodDetailViewModel()
+    @Environment(\.dismiss) var dismiss
+    @StateObject var vm: FoodDetailViewModel
     
     var body: some View {
         ScrollView {
             VStack {
-                    CustomRemoteImage(UrlString: food.imageUrl) {
+                CustomRemoteImage(UrlString: vm.food.imageUrl) {
                         Image("food-placeholder")
                             .resizable()
                             .renderingMode(.template)
@@ -29,19 +27,19 @@ struct FoodDetailView: View {
                 .background(.popup)
                 .clipShape(RoundedRectangle(cornerRadius: 40))
                 .padding(.horizontal, 5)
-                Text(food.name)
+                Text(vm.food.name)
                     .font(.title)
                     .fontWeight(.semibold)
                     .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
                     .padding(.vertical)
                 
-                CategoryView(string: food.category)
+                CategoryView(string: vm.food.category)
                     .scaleEffect(1.2)
                     .foregroundStyle(.brand)
                 
                 HStack {
-                    CustomRemoteImage(UrlString: cook.imageUrl) {
+                    CustomRemoteImage(UrlString: vm.cook.imageUrl) {
                         Image(systemName: "person")
                             .resizable()
                             .scaledToFit()
@@ -50,9 +48,9 @@ struct FoodDetailView: View {
                     .clipShape(Circle())
                     
                     NavigationLink(destination: {
-                        CookDetailView(cook: cook)
+                        CookDetailView(cook: vm.cook)
                     }, label: {
-                        Text(cook.name)
+                        Text(vm.cook.name)
                             .minimumScaleFactor(0.5)
                             .padding(.horizontal, 5)
                             .foregroundStyle(Color.label)
@@ -72,7 +70,7 @@ struct FoodDetailView: View {
                     .fontWeight(.semibold)
                     .padding(.horizontal, 10)
                 
-                Text(food.description)
+                Text(vm.food.description)
                     .padding(10)
                     .padding(.horizontal, 15)
                 
@@ -112,12 +110,16 @@ struct FoodDetailView: View {
                 }.padding()
             }
         }
+        .alert(item: $vm.alertItem) {alert in
+            Alert(title: Text(alert.title), message: Text(alert.description))
+        }
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Button {
-                    vm.addToOrder()
+                    vm.addToOrder() { dismiss() }
                 }label: {
-                    BrandBtn(text: "Order • \(food.price) Kč", width: 200)
+                    
+                    BrandBtn(text: "Order • \(vm.food.price) Kč", width: 200)
                 }
             }
             .sharedBackgroundVisibility(.hidden)
@@ -143,5 +145,5 @@ struct FoodDetailView: View {
 }
 
 #Preview {
-    FoodDetailView(food: MockData.sampleCook.foods[0], cook: MockData.sampleCook)
+    FoodDetailView(vm: FoodDetailViewModel(food: MockData.sampleCook.foods[0], cook: MockData.sampleCook))
 }
