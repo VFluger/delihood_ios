@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@MainActor 
+@MainActor
 final class FoodDetailViewModel: ObservableObject {
     @Published var food: Food
     @Published var cook: Cook
@@ -34,9 +34,9 @@ final class FoodDetailViewModel: ObservableObject {
         self.alertItem = nil
     }
     
-    func addToOrder(dismiss: @escaping () -> Void) {
+    func addToOrder(quantity: Int = 1 , dismiss: @escaping () -> Void) {
         print("ADDING TO ORDER")
-        let orderItem = OrderItem(foodId: food.id, quantity: 1, name: food.name, price: food.price, note: notes)
+        let orderItem = OrderItem(foodId: food.id, quantity: quantity, name: food.name, price: food.price, note: notes)
         do {
             //Try to append to existing order
             var decodedOrder = try JSONDecoder().decode(Order.self, from: order ?? Data())
@@ -46,8 +46,14 @@ final class FoodDetailViewModel: ObservableObject {
                 alertItem = AlertContext.cannotAddToOrder
                 return
             }
-            
-            decodedOrder.items.append(orderItem)
+            // Check if food already in order
+            if let existingIndex = decodedOrder.items.firstIndex(where: { $0.foodId == orderItem.foodId }) {
+                // Food already exists in order, increase quantity
+                decodedOrder.items[existingIndex].quantity += quantity
+            } else {
+                // Food not in order, append new item
+                decodedOrder.items.append(orderItem)
+            }
             decodedOrder.cookId = cook.id
             let encodedOrder = try JSONEncoder().encode(decodedOrder)
             order = encodedOrder

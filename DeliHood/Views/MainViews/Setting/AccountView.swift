@@ -84,7 +84,7 @@ struct AccountInfoView: View {
                     .font(.title2)
                     .fontWeight(.bold)
                     .padding(.bottom, 2)
-                Label(user.phone, systemImage: "phone")
+                Label(user.phone.formattedPhone(), systemImage: "phone")
                     .padding(.bottom, 5)
                 Label(user.email, systemImage: "envelope")
                     .lineLimit(1)

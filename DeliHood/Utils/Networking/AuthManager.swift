@@ -25,12 +25,12 @@ class AuthManager {
         do {
             let tokens = try JSONDecoder().decode(AuthTokens.self, from: data)
             if !saveTokens(tokens) {
-                throw AuthError.saveTokensFailed
+                throw MainError.saveTokensFailed
             }
         } catch {
             // Check if wrong password or mail
                 let decode = try JSONDecoder().decode(WrongPassOrMailResp.self, from: data)
-                throw AuthError.wrongPassOrMail
+                throw MainError.wrongPassOrMail
         }
         
     }
@@ -42,18 +42,18 @@ class AuthManager {
         let (data, response) = try await performRequest(url: url, method: "POST", body: registerRequest)
         //Check if user in db (error 409)
         if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 409 {
-            throw AuthError.userAlreadyInDb
+            throw MainError.userAlreadyInDb
         }
         
         let registerResponse = try JSONDecoder().decode(RegisterResponse.self, from: data)
         
         
         if let errorMessage = registerResponse.error {
-            throw AuthError.networkError(description: errorMessage)
+            throw MainError.networkError(description: errorMessage)
         }
         
         guard registerResponse.success == true else {
-            throw AuthError.invalidResponse
+            throw MainError.invalidResponse
         }
     }
     
@@ -67,10 +67,10 @@ class AuthManager {
             let tokens = try JSONDecoder().decode(AuthTokens.self, from: data)
             
             if !saveTokens(tokens) {
-                throw AuthError.saveTokensFailed
+                throw MainError.saveTokensFailed
             }
         }catch {
-            throw AuthError.cannotGetToken
+            throw MainError.cannotGetToken
         }
     }
     
@@ -105,7 +105,7 @@ class AuthManager {
     
     func decodeAccessToken() throws -> JWT {
         guard let token = getAccessToken() else {
-            throw AuthError.cannotGetToken
+            throw MainError.cannotGetToken
         }
         return try decode(jwt: token)
     }

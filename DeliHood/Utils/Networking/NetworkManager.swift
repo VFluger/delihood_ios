@@ -43,7 +43,7 @@ class NetworkManager {
             let decodedData = try JSONDecoder().decode(HomeViewResponse.self, from: data)
             return decodedData
         }catch {
-            throw AuthError.cannotDecode
+            throw MainError.cannotDecode
         }
     }
     
@@ -55,7 +55,7 @@ class NetworkManager {
             let tokens = try JSONDecoder().decode(AuthTokens.self, from: data)
             
             if !AuthManager.shared.saveTokens(tokens) {
-                throw AuthError.saveTokensFailed
+                throw MainError.saveTokensFailed
             }
             //SUCCESS
             return .success
@@ -160,10 +160,10 @@ class NetworkManager {
                 // call again
                 return try await self.get(path: path, sendJWT: sendJWT, retryCount: retryCount + 1)
             } else {
-                throw AuthError.refreshFailed
+                throw MainError.refreshFailed
             }
         case 403:
-            throw AuthError.emailNotVerified
+            throw MainError.emailNotVerified
         default:
             throw URLError(.badServerResponse)
         }
@@ -181,7 +181,7 @@ class NetworkManager {
             if accessToken.isEmpty {
                 // code
                 print("Access Token not available")
-                throw AuthError.cannotGetToken
+                throw MainError.cannotGetToken
             }
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
@@ -208,14 +208,14 @@ class NetworkManager {
                 // call again
                 return try await self.post(path: path, body: body, sendJWT: sendJWT, retryCount: retryCount + 1)
             } else {
-                throw AuthError.cannotGetToken
+                throw MainError.cannotGetToken
             }
         case 403:
-            throw AuthError.emailNotVerified
+            throw MainError.emailNotVerified
         case 409:
-            throw AuthError.duplicateValue
+            throw MainError.duplicateValue
         default:
-            throw AuthError.invalidResponse
+            throw MainError.invalidResponse
         }
     }
 }

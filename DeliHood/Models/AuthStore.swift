@@ -45,7 +45,7 @@ class AuthStore: ObservableObject {
             }
             withAnimation(.easeOut) {
                 switch error {
-                case AuthError.emailNotVerified:
+                case MainError.emailNotVerified:
                     appState = .emailNotVerified
                 default:
                     appState = .loggedOut

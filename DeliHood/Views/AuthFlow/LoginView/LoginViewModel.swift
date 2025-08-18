@@ -35,9 +35,9 @@ final class LoginViewModel: ObservableObject, OAuthVMProtocol {
                     hasNoConnection = true
                 } else {
                     switch error {
-                    case AuthError.networkError(_):
+                    case MainError.networkError(_):
                         alertItem = AlertContext.networkFail
-                    case AuthError.wrongPassOrMail:
+                    case MainError.wrongPassOrMail:
                         alertItem = AlertContext.wrongPassOrMail
                     default:
                         alertItem = AlertContext.failLogin

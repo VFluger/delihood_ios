@@ -48,7 +48,7 @@ final class EditFieldViewModel: ObservableObject {
                 dismiss()
             } catch {
                 print(error)
-                if let authError = error as? AuthError {
+                if let authError = error as? MainError {
                     if case .duplicateValue = authError {
                         alertItem = AlertContext.duplicateValue
                         return

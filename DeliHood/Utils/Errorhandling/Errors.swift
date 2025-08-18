@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AuthError: Error {
+enum MainError: Error {
     case cannotDecode
     case cannotGetToken
     case networkError(description: String)

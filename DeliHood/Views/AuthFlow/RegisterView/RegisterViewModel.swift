@@ -56,9 +56,9 @@ final class RegisterViewModel: ObservableObject, OAuthVMProtocol {
                     hasNoConnection = true
                 } else {
                     switch error {
-                    case AuthError.userAlreadyInDb:
+                    case MainError.userAlreadyInDb:
                         alertItem = AlertContext.userAlreadyInDb
-                    case AuthError.cannotGetToken:
+                    case MainError.cannotGetToken:
                         alertItem = AlertContext.failRegister
                     default:
                         alertItem = AlertContext.failRegister

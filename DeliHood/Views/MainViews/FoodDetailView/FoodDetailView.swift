@@ -11,6 +11,8 @@ struct FoodDetailView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var vm: FoodDetailViewModel
     
+    @State var quantity: Int = 1
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -109,6 +111,19 @@ struct FoodDetailView: View {
                     
                 }.padding()
             }
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Quantity:")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, 10)
+                Stepper(value: $quantity, in: 1...20) {
+                    Text("\(quantity)")
+                        .font(.headline)
+                        .padding(.horizontal, 15)
+                }
+                .padding(.horizontal, 10)
+                .padding(.bottom, 10)
+            }
         }
         .alert(item: $vm.alertItem) {alert in
             Alert(title: Text(alert.title), message: Text(alert.description))
@@ -116,7 +131,7 @@ struct FoodDetailView: View {
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Button {
-                    vm.addToOrder() { dismiss() }
+                    vm.addToOrder(quantity: quantity) { dismiss() }
                 }label: {
                     
                     BrandBtn(text: "Order • \(vm.food.price) Kč", width: 200)

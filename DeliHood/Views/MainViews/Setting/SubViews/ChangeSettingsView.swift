@@ -69,7 +69,7 @@ struct ChangeSettingsView: View {
                     HStack {
                         Text("Phone Number")
                         Spacer()
-                        Text(authStore.user?.phone ?? "-")
+                        Text(authStore.user?.phone.formattedPhone() ?? "-")
                             .foregroundStyle(.secondary)
                     }
                 }
