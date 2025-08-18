@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-
+//Log in or register view
 struct LoggedOutWelcomeView: View {
     
     var body: some View {

@@ -9,9 +9,9 @@ import SwiftUI
 
 struct CategoryView: View {
     var category: CategoryContext? = nil
-    var string: String?
+    var string: String? = nil
     
-    
+    //Show depending of if passed by string or CategoryContext
     var body: some View {
         if category != nil {
             HStack {

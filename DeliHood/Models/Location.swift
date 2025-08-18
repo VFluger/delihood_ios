@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+// Used for addresses
 @Model
 class Location {
     var id: UUID

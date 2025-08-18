@@ -28,6 +28,7 @@ struct AccountView: View {
                     AccountInfoView(user: authStore.user!)
                 }
                 
+                //Order section
                 Section {
                     NavigationLink(destination: OrderHistoryView()) {
                         Label("Order history", systemImage: "receipt")
@@ -35,6 +36,7 @@ struct AccountView: View {
                     
                 }
                 
+                //Main settings
                 Section {
                     ForEach(AccountSetting.allCases) {setting in
                         NavigationLink(destination: setting.destination) {
@@ -42,6 +44,8 @@ struct AccountView: View {
                         }
                     }
                 }
+                
+                //Log out section
                 Section {
                     Label("Log out", systemImage: "rectangle.portrait.and.arrow.right")
                         .onTapGesture {
@@ -49,9 +53,8 @@ struct AccountView: View {
                         }
                 }
             }
-            .listStyle(.insetGrouped)
             .navigationTitle("Account")
-            //Close btn
+            //Confirm for logging out
             .alert(isPresented: $showLogoutAlert) {
                 Alert(
                     title: Text("Log Out"),
@@ -92,41 +95,6 @@ struct AccountInfoView: View {
                     .minimumScaleFactor(0.5)
             }
             .padding(.vertical)
-        }
-    }
-}
-
-enum AccountSetting: String, CaseIterable, Identifiable {
-    case changeAccountSettings
-    case privacy
-    case notifications
-    case help
-
-    var id: String { self.rawValue }
-
-    var label: String {
-        switch self {
-        case .changeAccountSettings: return "Change Account Settings"
-        case .privacy: return "Privacy"
-        case .notifications: return "Notifications"
-        case .help: return "Help & Support"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .changeAccountSettings: return "person.2.badge.gearshape"
-        case .privacy: return "lock.shield"
-        case .notifications: return "bell.badge"
-        case .help: return "questionmark.circle"
-        }
-    }
-    var destination: AnyView {
-        switch self {
-        case .changeAccountSettings: return AnyView(ChangeSettingsView())
-        case .privacy: return AnyView(PrivacyView())
-        case .notifications: return AnyView(NotificationsView())
-        case .help: return AnyView(HelpView())
         }
     }
 }

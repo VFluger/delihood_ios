@@ -15,18 +15,8 @@ struct FoodListView: View {
     
     var body: some View {
             HStack {
-                CustomRemoteImage(UrlString: food.imageUrl, placeholderView: {
-                    Image("food-placeholder")
-                        .renderingMode(.template)
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundStyle(.primary)
-                        .frame(width: 50)
-                })
-                .frame(width: 100, height: 100)
-                .background(.popup)
-                .clipShape(RoundedRectangle(cornerRadius: 25))
-                .padding(.horizontal, 10)
+                FoodListImageView(urlString: food.imageUrl)
+                
                 VStack(alignment: .leading) {
                     Text(food.name)
                         .fontWeight(.bold)
@@ -37,7 +27,6 @@ struct FoodListView: View {
                         .font(.footnote)
                         .lineLimit(2)
                         
-                    //Converting to CategoryContext
                     CategoryView(string: food.category)
                     Spacer()
                 }
@@ -52,6 +41,7 @@ struct FoodListView: View {
                 .padding()
             }
             .padding(.vertical, 2)
+        
             .onTapGesture {
                 showDetail = true
             }
@@ -61,6 +51,25 @@ struct FoodListView: View {
                 }
             }
         }
+}
+
+struct FoodListImageView: View {
+    let urlString: String
+    
+    var body: some View {
+        CustomRemoteImage(UrlString: urlString, placeholderView: {
+            Image("food-placeholder")
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(.primary)
+                .frame(width: 50)
+        })
+        .frame(width: 100, height: 100)
+        .background(.popup)
+        .clipShape(RoundedRectangle(cornerRadius: 25))
+        .padding(.horizontal, 10)
+    }
 }
 
 #Preview {

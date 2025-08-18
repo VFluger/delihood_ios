@@ -12,6 +12,7 @@ struct MainScreenView: View {
     
     var body: some View {
         VStack {
+            //Show different views depending on the appState
             switch authStore.appState {
             case .loading:
                 ProgressView()

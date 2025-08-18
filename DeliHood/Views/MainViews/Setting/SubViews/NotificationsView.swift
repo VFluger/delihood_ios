@@ -7,8 +7,8 @@
 
 import SwiftUI
 
+// Just UI, no backend
 struct NotificationsView: View {
-    //TODO: Add to swiftdata
     @State private var allNotif = true
     @State private var orderStatusNotif = true
     @State private var orderDelayedNotif = true
@@ -43,7 +43,6 @@ struct NotificationsView: View {
             }
             
         }
-        .listStyle(.insetGrouped)
         .navigationTitle("Notifications")
     }
 }

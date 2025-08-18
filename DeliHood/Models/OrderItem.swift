@@ -19,6 +19,7 @@ struct OrderItem: Codable, Identifiable {
     var note: String?
 }
 
+//Check by UUID
 extension OrderItem: Equatable {
     static func == (lhs: OrderItem, rhs: OrderItem) -> Bool {
         return lhs.id == rhs.id

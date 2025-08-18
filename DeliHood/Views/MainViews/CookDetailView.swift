@@ -10,6 +10,7 @@ import SwiftUI
 struct CookDetailView: View {
     var cook: Cook
     @State private var isBadgesSheetPresented = false
+    
     var body: some View {
         ScrollView {
             LazyVStack {
@@ -20,14 +21,17 @@ struct CookDetailView: View {
                     }
                     .frame(width: 100, height: 100)
                     .clipShape(Circle())
+                    
                     VStack(alignment: .leading) {
                         Text(cook.name)
                             .font(.title3)
                             .fontWeight(.semibold)
                             .multilineTextAlignment(.center)
                             .minimumScaleFactor(0.5)
+                        
                         Label("Olomouc", systemImage: "mappin.circle")
                             .padding(.vertical, 5)
+                        
                         //Badges
                         HStack {
                             Image(systemName: "flame")

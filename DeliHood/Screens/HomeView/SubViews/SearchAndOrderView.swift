@@ -15,8 +15,9 @@ struct SearchAndOrderView: View {
     @AppStorage("order") var orderData: Data?
     
     @State private var isShowingOrderBtn = false
-    @Namespace private var animation
+    @Namespace private var animation //For animating the searchbar when order
     
+    //Decode order
     private var order: Order? {
         guard let data = orderData else { return nil }
         return try? JSONDecoder().decode(Order.self, from: data)
@@ -29,34 +30,8 @@ struct SearchAndOrderView: View {
                 ScrollView(.horizontal) {
                     HStack {
                         ForEach(CategoryContext.allCases, id: \.self) {data in
-                            HStack {
-                                Image(data.iconName)
-                                    .renderingMode(.template)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .foregroundStyle(Color.label)
-                                    .frame(width: 15)
-                                    .scaledToFit()
-                                Text(data.name)
-                                    .foregroundStyle(Color.label)
-                            }
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 7)
-                            .glassEffect(
-                                .regular
-                                    .tint(.brand.opacity(selectedFilter == data ? 0.3 : 0))
-                                    .interactive())
-                            .padding(.horizontal, 5)
-                            .onTapGesture {
-                                withAnimation(.easeOut) {
-                                    //Toggle selectedFilter
-                                    if selectedFilter == data {
-                                        selectedFilter = nil
-                                    }else {
-                                        selectedFilter = data
-                                    }
-                                }
-                            }
+                            categoryChip(data: data, selectedFilter: $selectedFilter)
+                            
                         }
                     }
                 }
@@ -64,45 +39,19 @@ struct SearchAndOrderView: View {
                 .padding(.leading, 10)
                 .padding(.bottom, 10)
             }
+            //MARK: Show Finish Order btn
             if isShowingOrderBtn {
-                //Finish order btn
-                HStack {
-                    Spacer()
-                        .frame(width: 30)
-                    Button {
-                        withAnimation {
-                            isOrderPresented = true
-                        }
-                    }label: {
-                        Label("•  Finish order", systemImage: "\(order?.items.count ?? 0).circle")
-                            .foregroundStyle(Color.label)
-                            .fontWeight(.semibold)
-                            .padding()
-                            .padding(.vertical, 5)
-                            .frame(maxWidth: .infinity)
-                            .brandGlassEffect()
-                    }
-                    Spacer()
-                        .frame(width: 30)
-                    Image(systemName: "magnifyingglass")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundStyle(Color.label)
-                        .frame(width: 25)
-                        .padding()
-                        .glassEffect(.regular.interactive())
-                        .matchedGeometryEffect(id: "searchField", in: animation)
-                        .onTapGesture {
-                            withAnimation {
-                                isShowingOrderBtn = false
-                            }
-                        }
-                    Spacer()
+                if let order = order {
+                    OrderBtnView(order: order,
+                                 isOrderPresented: $isOrderPresented,
+                                 isShowingOrderBtn: $isShowingOrderBtn,
+                                 animation: animation)
                 }
                 
             }else {
                 //Search bar
                 HStack {
+                    //MARK: Show x btn if order present
                     if !(order?.items.isEmpty ?? true) {
                         Image(systemName: "xmark")
                             .foregroundStyle(Color.label)
@@ -115,24 +64,7 @@ struct SearchAndOrderView: View {
                                 }
                             }
                     }
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                        TextField("Search", text: $searchText)
-                            .foregroundStyle(.primary)
-                        //Adding animation to the update of value
-                            .onChange(of: searchText, { oldValue, newValue in
-                                withAnimation(.easeInOut) {
-                                    searchText = newValue
-                                }
-                            })
-                            .opacity(isShowingOrderBtn ? 0 : 1)
-                            .animation(.easeInOut, value: isShowingOrderBtn)
-                    }
-                    .matchedGeometryEffect(id: "searchField", in: animation)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(Color.label)
-                    .glassEffect(.regular.interactive())
+                   SearchBarView(isShowingOrderBtn: $isShowingOrderBtn, animation: animation, searchText: $searchText)
                 }
                 
             }
@@ -148,6 +80,112 @@ struct SearchAndOrderView: View {
                 isShowingOrderBtn = !(order?.items.isEmpty ?? true)
             }
         }
+    }
+}
+
+struct categoryChip: View {
+    var data: CategoryContext
+    @Binding var selectedFilter: CategoryContext?
+    
+    var body: some View {
+        HStack {
+            Image(data.iconName)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(Color.label)
+                .frame(width: 15)
+                .scaledToFit()
+            Text(data.name)
+                .foregroundStyle(Color.label)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .glassEffect(
+            .regular
+                .tint(.brand.opacity(selectedFilter == data ? 0.3 : 0))
+                .interactive())
+        .padding(.horizontal, 5)
+        .onTapGesture {
+            withAnimation(.easeOut) {
+                //Toggle selectedFilter
+                if selectedFilter == data {
+                    selectedFilter = nil
+                }else {
+                    selectedFilter = data
+                }
+            }
+        }
+    }
+}
+
+struct OrderBtnView: View {
+    var order: Order
+    @Binding var isOrderPresented: Bool
+    @Binding var isShowingOrderBtn: Bool
+    
+    var animation: Namespace.ID
+    
+    var body: some View {
+        HStack {
+            Spacer()
+                .frame(width: 30)
+            Button {
+                withAnimation {
+                    isOrderPresented = true
+                }
+            }label: {
+                Label("•  Finish order", systemImage: "\(order.items.count).circle")
+                    .foregroundStyle(Color.label)
+                    .fontWeight(.semibold)
+                    .padding()
+                    .padding(.vertical, 5)
+                    .frame(maxWidth: .infinity)
+                    .brandGlassEffect()
+            }
+            Spacer()
+                .frame(width: 30)
+            Image(systemName: "magnifyingglass")
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(Color.label)
+                .frame(width: 25)
+                .padding()
+                .glassEffect(.regular.interactive())
+                .matchedGeometryEffect(id: "searchField", in: animation)
+                .onTapGesture {
+                    withAnimation {
+                        isShowingOrderBtn = false
+                    }
+                }
+            Spacer()
+        }
+    }
+}
+
+struct SearchBarView: View {
+    @Binding var isShowingOrderBtn: Bool
+    var animation: Namespace.ID
+    @Binding var searchText: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+            TextField("Search", text: $searchText)
+                .foregroundStyle(.primary)
+                .onChange(of: searchText, { oldValue, newValue in
+                    withAnimation(.easeInOut) {
+                        searchText = newValue
+                    }
+                })
+                .opacity(isShowingOrderBtn ? 0 : 1)
+                .animation(.easeInOut, value: isShowingOrderBtn)
+        }
+        .matchedGeometryEffect(id: "searchField", in: animation)
+        .padding()
+        .frame(maxWidth: .infinity)
+        .foregroundStyle(Color.label)
+        .glassEffect(.regular.interactive())
     }
 }
 

@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+//Explaining what each badge does
+//In this project its just a UI, no backend
 struct BadgesSheetView: View {
     @State private var selectedIndex: Int = 0
     

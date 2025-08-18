@@ -8,14 +8,18 @@
 import Foundation
 import MapKit
 
+//UIKit stuff
 class LocationSearchService: NSObject, ObservableObject {
     @Published var results: [LocationResult] = []
     var status: SearchStatus = .idle
     var completer: MKLocalSearchCompleter
     
     init(filter: MKPointOfInterestFilter = .excludingAll,
-         region: MKCoordinateRegion = MKCoordinateRegion(.world),
-         types: MKLocalSearchCompleter.ResultType = [.pointOfInterest, .query, .address]) {
+         region: MKCoordinateRegion = MKCoordinateRegion(
+             center: CLLocationCoordinate2D(latitude: 49.8175, longitude: 15.4730),
+             span: MKCoordinateSpan(latitudeDelta: 5.0, longitudeDelta: 5.0) // ONLY CZECH REPUBLIC
+         ),
+         types: MKLocalSearchCompleter.ResultType = [.address]) { // Just use addresses
         
         completer = MKLocalSearchCompleter()
         

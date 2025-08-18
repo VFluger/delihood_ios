@@ -7,11 +7,7 @@
 
 import SwiftUI
 
-struct CategoryItem {
-    let name: String
-    let iconName: String
-}
-
+//Category UI handling
 enum CategoryContext: String, CaseIterable, Identifiable {
     case asian, italien, czech, indian, cheap, drink
     

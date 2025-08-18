@@ -9,14 +9,13 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var authStore: AuthStore
     @StateObject var vm = HomeViewModel()
-    @State private var showAccount = false   // track navigation state
-    @State private var isOrderPresented = false
     
     var body: some View {
         NavigationStack {
             VStack {
                 ScrollView {
                     LazyVStack {
+                        //If alert, show error view
                         if vm.alertItem == nil {
                             ForEach(vm.mainScreenData ?? []) { cook in
                                 CookListView(cook: cook,
@@ -34,10 +33,11 @@ struct HomeView: View {
                 Spacer()
             }
             .navigationTitle(vm.alertItem == nil ? "Home" : "Error")
+            //Settings icon
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        showAccount = true
+                        vm.showAccount = true
                     } label: {
                         CustomRemoteImage(UrlString: authStore.user?.imageUrl) {
                             Image(systemName: "person")
@@ -46,26 +46,30 @@ struct HomeView: View {
                     }
                 }
             }
-            .navigationDestination(isPresented: $showAccount) {
+            //Open settings
+            .navigationDestination(isPresented: $vm.showAccount) {
                 AccountView()
             }
             
             // only show overlay when NOT in account
             .overlay {
-                if !showAccount {
+                if !vm.showAccount {
                     VStack {
                         Spacer()
+                        //Search and categorys + finish order btn
                         SearchAndOrderView(selectedFilter: $vm.selectedFilter,
-                                           searchText: $vm.searchText, isOrderPresented: $isOrderPresented)
+                                           searchText: $vm.searchText, isOrderPresented: $vm.isOrderPresented)
                         .padding()
+                        //Fade on the bottom
                         .background(Gradient(colors: [.clear, .black.opacity(0.5)]))
                     }
                 }
             }
             .onAppear { vm.getData() }
-            .sheet(isPresented: $isOrderPresented) {
+            .sheet(isPresented: $vm.isOrderPresented) {
                 OrderFinishView()
             }
+            //If order in AppStorage changes, get again (filters the cooks)
             .onChange(of: vm.orderData) {
                             vm.getData()
                         }

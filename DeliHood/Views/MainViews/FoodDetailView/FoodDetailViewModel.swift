@@ -35,7 +35,6 @@ final class FoodDetailViewModel: ObservableObject {
     }
     
     func addToOrder(quantity: Int = 1 , dismiss: @escaping () -> Void) {
-        print("ADDING TO ORDER")
         let orderItem = OrderItem(foodId: food.id, quantity: quantity, name: food.name, price: food.price, note: notes)
         do {
             //Try to append to existing order

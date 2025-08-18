@@ -18,9 +18,6 @@ struct ChangeSettingsView: View {
     @State var updateSheet: Location? = nil
     @State var addSheet = false
     
-    // Placeholder example address
-    @State var address = "123 Main Street, Springfield"
-    
     private var usernameBinding: Binding<String> {
         Binding(
             get: { authStore.user?.username ?? "" },
@@ -95,33 +92,12 @@ struct ChangeSettingsView: View {
                     .clipShape(Circle())
                 }
             }
-            Section("Delivery Addresses") {
-                if locationModels.isEmpty {
-                    HStack {
-                        Image(systemName: "truck.box")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 50, height: 50)
-                        Text("You have no addresses yet. \n Add a new one")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                    }
-                }
-                Button {
-                    addSheet = true
-                }label: {
-                    Label("Add a new address", systemImage: "plus")
-                }
-                    ForEach(locationModels) { location in
-                        LocationListView(locationModel: location, updateSheet: $updateSheet)
-                    }
-                    .onDelete {indexSet in
-                        for index in indexSet {
-                            context.delete(locationModels[index])
-                        }
-                    }
-                
-            }
+            DeliveryAddressesSection(
+                locationModels: locationModels,
+                updateSheet: $updateSheet,
+                addSheet: $addSheet,
+                context: context
+            )
         }
         .sheet(item: $updateSheet) {location in
             UpdateAddressView(locationModel: location)
@@ -132,6 +108,56 @@ struct ChangeSettingsView: View {
                 .presentationDetents([.height(600)])
         }
         .navigationTitle("Change Settings")
+    }
+}
+
+struct LocationListView: View {
+    var locationModel: Location
+    @Binding var updateSheet: Location?
+    var body: some View {
+        HStack {
+            Label(locationModel.address, systemImage: "mappin.circle")
+        }
+        .onTapGesture {
+            updateSheet = locationModel
+        }
+    }
+}
+
+
+struct DeliveryAddressesSection: View {
+    let locationModels: [Location]
+    @Binding var updateSheet: Location?
+    @Binding var addSheet: Bool
+    var context: ModelContext
+    
+    var body: some View {
+        Section(header: Text("Delivery Addresses")) {
+            if locationModels.isEmpty {
+                HStack {
+                    Image(systemName: "truck.box")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 50, height: 50)
+                    Text("You have no addresses yet. \n Add a new one")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                }
+            }
+            Button {
+                addSheet = true
+            } label: {
+                Label("Add a new address", systemImage: "plus")
+            }
+            ForEach(locationModels) { location in
+                LocationListView(locationModel: location, updateSheet: $updateSheet)
+            }
+            .onDelete { indexSet in
+                for index in indexSet {
+                    context.delete(locationModels[index])
+                }
+            }
+        }
     }
 }
 

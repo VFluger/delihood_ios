@@ -9,38 +9,29 @@ import SwiftUI
 import SwiftData
 import MapKit
 
-struct LocationListView: View {
-    var locationModel: Location
-    @Binding var updateSheet: Location?
-    var body: some View {
-        HStack {
-            Label(locationModel.address, systemImage: "mappin.circle")
-        }
-        .onTapGesture {
-            updateSheet = locationModel
-        }
+struct LocationEditorView: View {
+    let title: String
+    @State private var address: String
+    @State private var location: CLLocationCoordinate2D
+    @State private var cameraPosition: MapCameraPosition
+    @StateObject private var searchModel = LocationSearchService()
+    let saveAction: (String, CLLocationCoordinate2D) -> Void
+    @Environment(\.dismiss) private var dismiss
+    
+    init(title: String,
+         initialAddress: String,
+         initialLocation: CLLocationCoordinate2D,
+         saveAction: @escaping (String, CLLocationCoordinate2D) -> Void) {
+        self.title = title
+        self._address = State(initialValue: initialAddress)
+        self._location = State(initialValue: initialLocation)
+        self._cameraPosition = State(initialValue: .region(MKCoordinateRegion(center: initialLocation, latitudinalMeters: 200, longitudinalMeters: 200)))
+        self.saveAction = saveAction
     }
-}
-
-
-struct UpdateAddressView: View {
-    @Bindable var locationModel: Location
-    @Environment(\.dismiss) var dismiss
-    
-    //A placeholder number, will be set by the swiftdata
-    @State private var location = CLLocationCoordinate2D(latitude: 16.12, longitude: 32.123)
-    
-    //A placeholder number, will be set by the swiftdata
-    @State private var cameraPosition:  MapCameraPosition = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 43.595,
-                                                                                                              longitude: 12.288),
-            latitudinalMeters: 200, longitudinalMeters: 200))
-    
-    @State private var address = ""
-    @StateObject var searchModel = LocationSearchService()
     
     var body: some View {
         VStack {
-            Text("Edit location")
+            Text(title)
                 .font(.title)
                 .fontWeight(.semibold)
                 .padding()
@@ -52,7 +43,7 @@ struct UpdateAddressView: View {
                 .onChange(of: address) { oldValue, newValue in
                     searchModel.handleSearchFragment(newValue)
                 }
-            
+            //Suggestion on addresses
             if !searchModel.results.isEmpty {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 8) {
@@ -89,6 +80,7 @@ struct UpdateAddressView: View {
                 .frame(maxHeight: 150) // limits the height so it doesn't take too much space
             }
             
+            //Map with pin on ZStack
             ZStack {
                 Map(position: $cameraPosition)
                 Image(systemName: "mappin")
@@ -102,117 +94,42 @@ struct UpdateAddressView: View {
                 location = context.camera.centerCoordinate
             }
             Button {
-                locationModel.address = address
-                locationModel.locationLat = location.latitude
-                locationModel.locationLng = location.longitude
+                saveAction(address, location)
                 dismiss()
-                
-            }label: {
+            } label: {
                 BrandBtn(text: "Save", width: 325)
             }
-            .onAppear {
-                let lat = locationModel.locationLat
-                let lng = locationModel.locationLng
-                
-                // If user set location, update the location pin and cameraPosition
-                location = CLLocationCoordinate2D(latitude: lat, longitude: lng)
-                
-                cameraPosition = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: lng), latitudinalMeters: 200, longitudinalMeters: 200))
-                
-                address = locationModel.address
-            }
+        }
+    }
+}
+
+struct UpdateAddressView: View {
+    @Bindable var locationModel: Location
+    
+    var body: some View {
+        LocationEditorView(
+            title: "Edit location",
+            initialAddress: locationModel.address,
+            initialLocation: CLLocationCoordinate2D(latitude: locationModel.locationLat, longitude: locationModel.locationLng),
+        ) { address, location in
+            locationModel.address = address
+            locationModel.locationLat = location.latitude
+            locationModel.locationLng = location.longitude
         }
     }
 }
 
 struct AddLocationView: View {
     @Environment(\.modelContext) var context
-    @Environment(\.dismiss) var dismiss
-    
-    @StateObject var searchModel = LocationSearchService()
-    
-    //A placeholder number, will be set by the swiftdata
-    @State private var location = CLLocationCoordinate2D(latitude: 16.12, longitude: 32.123)
-    
-    //A placeholder number, will be set by the swiftdata
-    @State private var cameraPosition:  MapCameraPosition = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 43.595,
-                                                                                                              longitude: 12.288),
-            latitudinalMeters: 200, longitudinalMeters: 200))
-    
-    @State private var address = ""
     
     var body: some View {
-        VStack {
-            Text("Add a new location")
-                .font(.title)
-                .fontWeight(.semibold)
-                .padding()
-            Spacer()
-            TextField("Address", text: $address)
-                .brandStyle(isFieldValid: true)
-                .onChange(of: address) {oldValue, newValue in
-                    print(newValue)
-                    searchModel.handleSearchFragment(newValue)
-                }
-            if !searchModel.results.isEmpty {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 8) {
-                        ForEach(searchModel.results) { result in
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(result.title)
-                                    .font(.headline)
-                                Text(result.subtitle)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 14)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Capsule())
-                            .shadow(radius: 2)
-                            .onTapGesture {
-                                address = result.title
-                                searchModel.selectResult(result) { coordinate in
-                                    if let coordinate = coordinate {
-                                        DispatchQueue.main.async {
-                                            location = coordinate
-                                            cameraPosition = .region(MKCoordinateRegion(center: location, latitudinalMeters: 200, longitudinalMeters: 200))
-                                            searchModel.results = []
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-                .frame(maxHeight: 150) // limits the height so it doesn't take too much space
-            }
-            ZStack {
-                Map(position: $cameraPosition)
-                Image(systemName: "mappin")
-                    .scaleEffect(2)
-                    .foregroundStyle(.white)
-            }
-            .frame(height: 200)
-            .clipShape(RoundedRectangle(cornerRadius: 40))
-            .padding()
-            .onMapCameraChange { context in
-                location = context.camera.centerCoordinate
-            }
-            Button {
-                let lat = location.latitude
-                let lng = location.longitude
-                
-                let locationModel = Location(id: UUID(), address: address, locationLat: lat, locationLng: lng)
-                
-                context.insert(locationModel)
-                dismiss()
-                
-            }label: {
-                BrandBtn(text: "Save", width: 325)
-            }
+        LocationEditorView(
+            title: "Add a new location",
+            initialAddress: "",
+            initialLocation: CLLocationCoordinate2D(latitude: 16.12, longitude: 32.123),
+        ) { address, location in
+            let locationModel = Location(id: UUID(), address: address, locationLat: location.latitude, locationLng: location.longitude)
+            context.insert(locationModel)
         }
     }
 }

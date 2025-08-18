@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// same enum as in db, notOrdered added
 enum OrderStatus: String, Codable {
     case notOrdered
     case pending
@@ -21,7 +22,7 @@ struct Order: Codable, Identifiable {
     var id: UUID
     var items: [OrderItem]
     
-    var cookId: Int?
+    var cookId: Int? // To display only foods from the same cook
     
     var deliveryLocationLat: Double?
     var deliveryLocationLng: Double?
@@ -29,7 +30,7 @@ struct Order: Codable, Identifiable {
     var status: OrderStatus
     
     var totalPrice: Int {
-        items.reduce(0) { $0 + $1.price }
+        items.reduce(0) { $0 + $1.price * $1.quantity }
     }
     var tip: Int
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//Could be replaced by ContentUnavailableView()
 struct ErrorView: View {
     var body: some View {
         VStack {

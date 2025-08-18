@@ -128,6 +128,7 @@ struct FoodDetailView: View {
         .alert(item: $vm.alertItem) {alert in
             Alert(title: Text(alert.title), message: Text(alert.description))
         }
+        //Add to order btn, favorite and share
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 Button {
