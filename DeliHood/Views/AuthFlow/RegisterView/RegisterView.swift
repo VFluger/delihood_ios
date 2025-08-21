@@ -68,7 +68,7 @@ struct RegisterView: View {
         .padding()
         .noConnectionOverlay($vm.hasNoConnection, retryFnc: vm.registerUser)
         .alert(item: $vm.alertItem) {alert in
-            Alert(title: Text(alert.title), message: Text(alert.description))
+            Alert(title: Text(alert.title), message: Text(alert.message))
         }
     }
 }

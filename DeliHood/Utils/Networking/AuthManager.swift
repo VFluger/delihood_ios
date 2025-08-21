@@ -23,13 +23,15 @@ class AuthManager {
         let url = URL(string: "\(authDomain)/auth/login")!
         let (data, _) = try await performRequest(url: url, method: "POST", body: loginRequest)
         do {
+            let jsonObj = try JSONSerialization.jsonObject(with: data, options: .mutableContainers)
+            print(jsonObj)
             let tokens = try JSONDecoder().decode(AuthTokens.self, from: data)
             if !saveTokens(tokens) {
                 throw MainError.saveTokensFailed
             }
         } catch {
             // Check if wrong password or mail
-                let decode = try JSONDecoder().decode(WrongPassOrMailResp.self, from: data)
+                try JSONDecoder().decode(WrongPassOrMailResp.self, from: data)
                 throw MainError.wrongPassOrMail
         }
         

@@ -39,7 +39,7 @@ struct ResettingPasswordView: View {
             Spacer()
         }
         .alert(item: $vm.alertItem) {alert in
-            Alert(title: Text(alert.title), message: Text(alert.description), dismissButton: .default(Text("Ok")) {
+            Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("Ok")) {
                 // Log out user
                 withAnimation(.easeOut) {
                     AuthManager.shared.logout()

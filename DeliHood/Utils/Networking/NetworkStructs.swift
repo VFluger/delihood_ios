@@ -33,6 +33,10 @@ struct ErrorStruct: Codable {
     let error: String?
 }
 
+struct SuccessStruct: Decodable {
+    let success: Bool
+}
+
 struct TokenBody: Encodable {
     let token: String
 }
@@ -79,9 +83,9 @@ struct OrderUpdateResponse: Decodable {
 }
 
 struct OrdersResponse: Decodable {
-    let data: [Order]
+    let data: [OrderHistory]
 }
 
 struct OrderDetailResponse: Decodable {
-    let data: Order
+    let data: OrderHistory
 }

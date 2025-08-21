@@ -113,7 +113,7 @@ struct FoodDetailView: View {
             }
         }
         .alert(item: $vm.alertItem) {alert in
-            Alert(title: Text(alert.title), message: Text(alert.description))
+            Alert(title: Text(alert.title), message: Text(alert.message))
         }
         //Add to order btn, favorite and share
         .toolbar {

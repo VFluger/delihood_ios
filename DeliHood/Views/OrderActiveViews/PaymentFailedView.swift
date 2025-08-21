@@ -38,6 +38,23 @@ struct PaymentFailedView: View {
             }label: {
                 BrandBtn(text: "Try again", width: 325)
             }
+            Button {
+                Task {
+                    do {
+                        try await orderStore.cancelCurrentOrder()
+                        try await orderStore.updateStatus()
+                    }catch {
+                        alertItem = AlertContext.cannotCancel
+                    }
+                }
+            }label: {
+                Label("Cancel order", systemImage: "xmark.app")
+                    .frame(width: 325)
+                    .padding()
+                    .foregroundStyle(Color.label)
+                    .glassEffect(.regular.interactive())
+            }
+            .padding()
         }.onAppear {
             guard let orderId = orderStore.currentOrder?.serverId else {
                 alertItem = AlertContext.cannotGetPaymentData
@@ -49,7 +66,7 @@ struct PaymentFailedView: View {
             }
         }
         .alert(item: $alertItem) {alert in
-            Alert(title: Text(alert.title), message: Text(alert.description))
+            Alert(title: Text(alert.title), message: Text(alert.message))
         }
     }
 }

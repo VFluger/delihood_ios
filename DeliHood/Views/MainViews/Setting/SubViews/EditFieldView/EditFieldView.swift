@@ -31,7 +31,7 @@ struct EditFieldView: View {
         .navigationTitle(vm.title)
         .navigationBarTitleDisplayMode(.inline)
         .alert(item: $vm.alertItem) { alert in
-            Alert(title: Text(alert.title), message: Text(alert.description))
+            Alert(title: Text(alert.title), message: Text(alert.message))
         }
     }
 }

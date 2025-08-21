@@ -9,13 +9,14 @@ import SwiftUI
 
 // same enum as in db, notOrdered added
 enum OrderStatus: String, Codable {
-    case notOrdered
+    case notOrdered = "not ordered"
     case pending
     case paid
     case accepted
     case waitingForPickup = "waiting for pickup"
     case delivering
     case delivered
+    case cancelled
 }
 
 struct Order: Codable, Identifiable {
@@ -30,6 +31,7 @@ struct Order: Codable, Identifiable {
     var deliveryLocationLng: Double?
     
     var status: OrderStatus
+    var created_at: Date?
     
     var totalPrice: Int {
         items.reduce(0) { $0 + $1.food.price * $1.quantity }
@@ -59,7 +61,7 @@ struct Order: Codable, Identifiable {
             id = try c.decodeIfPresent(UUID.self, forKey: .id)
             serverId = try c.decodeIfPresent(Int.self, forKey: .serverId)
             
-            // 👇 this line makes items always safe
+            // Changin to decodeIfPresent, if not empty array
             items = try c.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
             
             cook = try c.decodeIfPresent(Cook.self, forKey: .cook)
@@ -69,3 +71,15 @@ struct Order: Codable, Identifiable {
             tip = try c.decode(Int.self, forKey: .tip)
         }
 }
+
+struct OrderHistory: Codable, Identifiable {
+    var id: Int
+    var created_at: Date
+    var tip: Int
+    var total_price: Int
+    var status: OrderStatus
+    
+    var items: [OrderItemHistory]?
+}
+
+

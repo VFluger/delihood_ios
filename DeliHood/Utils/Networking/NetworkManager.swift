@@ -29,19 +29,28 @@ class NetworkManager {
         return try JSONDecoder().decode(getUserHelper.self, from: data).data
     }
     
-    func getOrders() async throws -> OrdersResponse{
+    func getOrders() async throws -> OrdersResponse {
         let data = try await NetworkManager.shared.genericGet(path: "/api/me/orders")
-        return try JSONDecoder().decode(OrdersResponse.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(OrdersResponse.self, from: data)
     }
     
-    func getOrderDetails(id: Int) async throws -> OrderDetailResponse{
+    func getOrderDetails(id: Int) async throws -> OrderDetailResponse {
         let data = try await NetworkManager.shared.genericGet(path: "/api/me/order", query: "id=\(id)")
-        return try JSONDecoder().decode(OrderDetailResponse.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(OrderDetailResponse.self, from: data)
     }
     
     func updateOrder(id: Int) async throws -> OrderUpdateResponse {
         let data = try await NetworkManager.shared.genericGet(path: "/api/order/update")
         return try JSONDecoder().decode(OrderUpdateResponse.self, from: data)
+    }
+    
+    func cancelOrder(id: Int) async throws {
+        let data = try await NetworkManager.shared.genericPost(path: "/api/order/cancel", body: ["id": id])
+        let _ = try JSONDecoder().decode(SuccessStruct.self, from: data)
     }
     
     func getPaymentSecret(orderId: Int) async throws -> String {

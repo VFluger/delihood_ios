@@ -17,6 +17,15 @@ struct OrderItem: Codable, Identifiable {
     var note: String?
 }
 
+struct OrderItemHistory: Codable {
+    let food_id: Int
+    let name: String
+    let description: String
+    let imageurl: String
+    let quantity: Int
+    let price_at_order: Int
+}
+
 //Check by UUID
 extension OrderItem: Equatable {
     static func == (lhs: OrderItem, rhs: OrderItem) -> Bool {

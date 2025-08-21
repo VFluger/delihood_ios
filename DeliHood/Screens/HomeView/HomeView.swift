@@ -75,7 +75,7 @@ struct HomeView: View {
                         }
             .alert(item: $vm.alertItem) { alert in
                 Alert(title: Text(alert.title),
-                      message: Text(alert.description),
+                      message: Text(alert.message),
                       dismissButton: .default(Text("Ok")))
             }
         }

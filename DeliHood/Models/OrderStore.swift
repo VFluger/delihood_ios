@@ -32,17 +32,24 @@ class OrderStore: ObservableObject {
     }
     
     func updateStatus() async throws {
-            let orders = try await NetworkManager.shared.getOrders()
-            let lastOrder = orders.data.last
-        if lastOrder?.status == .delivered || lastOrder == nil {
+        let orders = try await NetworkManager.shared.getOrders()
+        let lastOrder = orders.data.last
+        guard let lastOrder = lastOrder else {
             print("No order")
             currentOrder = nil
             paymentStatus = .notStarted
+            return
         }
-            currentOrder = lastOrder
+        if lastOrder.status == .delivered {
+            print("No order")
+            currentOrder = nil
+            paymentStatus = .notStarted
+            return
+        }
+        currentOrder = Order(serverId: lastOrder.id, items: [], status: lastOrder.status, tip: lastOrder.tip)
     }
     
     func cancelCurrentOrder() async throws {
-        
+        try await NetworkManager.shared.cancelOrder(id: currentOrder?.serverId ?? -1)
     }
 }

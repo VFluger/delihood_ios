@@ -36,11 +36,19 @@ struct PaymentCanceledView: View {
                 BrandBtn(text: "Try again", width: 325)
             }
             Button {
-                orderStore.cancelCurrentOrder()
+                Task {
+                    do {
+                        try await orderStore.cancelCurrentOrder()
+                        try await orderStore.updateStatus()
+                    }catch {
+                        alertItem = AlertContext.cannotCancel
+                    }
+                }
             }label: {
-                Text("Cancel")
+                Label("Cancel order", systemImage: "xmark.app")
                     .frame(width: 325)
                     .padding()
+                    .foregroundStyle(Color.label)
                     .glassEffect(.regular.interactive())
             }
             .padding()
@@ -59,7 +67,7 @@ struct PaymentCanceledView: View {
             }
         }
         .alert(item: $alertItem) {alert in
-            Alert(title: Text(alert.title), message: Text(alert.description))
+            Alert(title: Text(alert.title), message: Text(alert.message))
         }
     }
 }

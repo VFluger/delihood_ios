@@ -72,7 +72,7 @@ struct LoginView: View {
         }
         .alert(item: $vm.alertItem) {alert in
             notificationFeedback.notificationOccurred(.warning)
-            return Alert(title: Text(alert.title), message: Text(alert.description), dismissButton: .default(Text("Ok")))
+            return Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("Ok")))
             
         }
         .noConnectionOverlay($vm.hasNoConnection, retryFnc: vm.loginUser)

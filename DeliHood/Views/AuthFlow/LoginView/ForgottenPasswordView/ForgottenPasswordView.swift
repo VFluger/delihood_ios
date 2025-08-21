@@ -49,7 +49,7 @@ struct ForgottenPasswordView: View {
             }
         }
         .alert(item: $vm.alertItem) {alert in
-            Alert(title: Text(alert.title), message: Text(alert.description), dismissButton: .default(Text("Ok")) {
+            Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("Ok")) {
                 isPresented = false
             })
         }

@@ -161,7 +161,7 @@ struct OrderFinishView: View {
                     .presentationDetents([.height(600)])
             }
             .alert(item: $vm.alertItem) {alert in
-                Alert(title: Text(alert.title), message: Text(alert.description))
+                Alert(title: Text(alert.title), message: Text(alert.message))
             }
             .navigationTitle("Order")
         }
