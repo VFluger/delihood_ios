@@ -123,9 +123,9 @@ struct FoodDetailView: View {
                         quantity: Binding(
                             get: { vm.itemQuantity ?? 1 },
                             set: { vm.itemQuantity = $0 }
-                        ),
-                        vm: vm
-                    )
+                        )) {quantity in
+                            vm.addToOrder(quantity: quantity) { dismiss() }
+                        }
             }else {
                     Button {
                         vm.addToOrder(quantity: quantity) { dismiss() }

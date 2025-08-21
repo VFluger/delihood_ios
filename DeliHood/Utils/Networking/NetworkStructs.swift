@@ -60,10 +60,28 @@ struct WrongPassOrMailResp: Decodable {
 }
 
 struct HomeViewResponse: Decodable {
-    var success: Bool
-    var data: [Cook]
+    let success: Bool
+    let data: [Cook]
 }
 
 struct EditAccField: Encodable {
-    var newValue: String
+    let newValue: String
+}
+
+struct OrderPaymentResponse: Decodable {
+    let clientSecret: String
+    let orderId: Int
+}
+
+struct OrderUpdateResponse: Decodable {
+    let orderId: Int
+    let status: OrderStatus
+}
+
+struct OrdersResponse: Decodable {
+    let data: [Order]
+}
+
+struct OrderDetailResponse: Decodable {
+    let data: Order
 }

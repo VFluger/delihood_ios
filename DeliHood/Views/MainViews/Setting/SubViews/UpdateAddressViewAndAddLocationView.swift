@@ -106,6 +106,8 @@ struct LocationEditorView: View {
 struct UpdateAddressView: View {
     @Bindable var locationModel: Location
     
+    @Environment(\.modelContext) var context
+    
     var body: some View {
         LocationEditorView(
             title: "Edit location",

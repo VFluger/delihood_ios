@@ -9,34 +9,33 @@ import SwiftUI
 
 struct QuantityBtn: View {
     @Binding var quantity: Int
-    @ObservedObject var vm: FoodDetailViewModel
+    let callback: (_ quantity: Int) -> Void
     var body: some View {
         HStack {
             Button {
-                withAnimation {
-                    quantity -= 1
                     if quantity <= 1 {
                         quantity = 0
+                        callback(quantity)
+                    }else {
+                        quantity -= 1
+                        callback(quantity)
                     }
-                    vm.addToOrder(quantity: quantity) {
-                        print("No dismiss")
-                    }
-                }
             }label: {
                 Image(systemName: "chevron.left")
                     .foregroundStyle(Color.label)
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 5)
             Spacer()
             Text("\(quantity)")
+                .foregroundStyle(Color.label)
             Spacer()
             Button {
-                quantity += 1
                 if quantity >= 5 {
                     quantity = 5
-                }
-                vm.addToOrder(quantity: quantity) {
-                    print("No dismiss")
+                    callback(quantity)
+                }else {
+                    quantity += 1
+                    callback(quantity)
                 }
             }label: {
                 Image(systemName: "chevron.right")
@@ -45,12 +44,14 @@ struct QuantityBtn: View {
             .padding(.horizontal)
         }
         .frame(width: 200)
-        .padding()
+        .padding(15)
         .glassEffect(.regular.interactive())
     }
 }
 
 #Preview {
     @Previewable @State var quantity: Int = 1
-    QuantityBtn(quantity: $quantity, vm: FoodDetailViewModel(food: MockData.sampleCook.foods[0], cook: MockData.sampleCook))
+    QuantityBtn(quantity: $quantity) {qnt in
+        quantity = qnt
+    }
 }

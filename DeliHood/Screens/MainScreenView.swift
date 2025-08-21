@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainScreenView: View {
     @EnvironmentObject var authStore: AuthStore
+    @EnvironmentObject var orderStore: OrderStore
     
     var body: some View {
         VStack {
@@ -22,7 +23,27 @@ struct MainScreenView: View {
                 EmailVerificationView()
                 
             case .loggedIn:
-                HomeView()
+                switch orderStore.currentOrder?.status {
+                case .notOrdered:
+                    HomeView()
+                case .pending:
+                    switch orderStore.paymentStatus {
+                    case .notStarted:
+                        PaymentCanceledView()
+                    case .pending:
+                        ProgressView()
+                    case .succeeded:
+                        OrderView()
+                    case .failed(let error):
+                        PaymentFailedView(error: error)
+                    case .canceled:
+                        PaymentCanceledView()
+                    }
+                case nil:
+                    HomeView()
+                default:
+                    OrderView()
+                }
                 
             case .loggedOut:
                 LoggedOutWelcomeView()

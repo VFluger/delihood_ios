@@ -11,10 +11,8 @@ import Foundation
 struct OrderItem: Codable, Identifiable {
     var id = UUID()
     
-    var foodId: Int // Id from db
+    var food: Food
     var quantity: Int
-    var name: String
-    var price: Int
     
     var note: String?
 }

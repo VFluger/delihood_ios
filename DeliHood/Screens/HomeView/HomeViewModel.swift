@@ -32,8 +32,12 @@ final class HomeViewModel: ObservableObject {
                     do {
                         //Order exists, decode and filter only food from the same cook
                         let order = try JSONDecoder().decode(Order.self, from: data)
-                        mainScreenData = mainScreenData?.filter { $0.id == order.cookId }
+                        if order.items.isEmpty {
+                            orderData = Data()
+                        }
+                        mainScreenData = mainScreenData?.filter { $0.id == order.cook?.id }
                     }catch {
+                        print("Decoding failed")
                         //Order decode failed, probably no order initiated
                         //Just returns the mainScreenData
                     }

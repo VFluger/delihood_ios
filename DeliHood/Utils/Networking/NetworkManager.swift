@@ -29,6 +29,31 @@ class NetworkManager {
         return try JSONDecoder().decode(getUserHelper.self, from: data).data
     }
     
+    func getOrders() async throws -> OrdersResponse{
+        let data = try await NetworkManager.shared.genericGet(path: "/api/me/orders")
+        return try JSONDecoder().decode(OrdersResponse.self, from: data)
+    }
+    
+    func getOrderDetails(id: Int) async throws -> OrderDetailResponse{
+        let data = try await NetworkManager.shared.genericGet(path: "/api/me/order", query: "id=\(id)")
+        return try JSONDecoder().decode(OrderDetailResponse.self, from: data)
+    }
+    
+    func updateOrder(id: Int) async throws -> OrderUpdateResponse {
+        let data = try await NetworkManager.shared.genericGet(path: "/api/order/update")
+        return try JSONDecoder().decode(OrderUpdateResponse.self, from: data)
+    }
+    
+    func getPaymentSecret(orderId: Int) async throws -> String {
+        let data = try await NetworkManager.shared.genericGet(path: "/api/order/payment", query: "id=\(orderId)")
+        return try JSONDecoder().decode(OrderPaymentResponse.self, from: data).clientSecret
+    }
+    
+    
+    func postOrder (_ order: Order) async throws -> OrderPaymentResponse {
+        let data = try await NetworkManager.shared.genericPost(path: "/api/new-order", body: order)
+        return try JSONDecoder().decode(OrderPaymentResponse.self, from: data)
+    }
     
     func changeAccSetting(_ value: String, type: EditFieldKey) async throws {
         try await NetworkManager.shared.genericPost(path: "/api/change/\(type.rawValue)", body: EditAccField(newValue: value))
@@ -109,8 +134,9 @@ class NetworkManager {
     }
     
     @discardableResult
-    func genericGet(path: String, sendJWT: Bool = true) async throws -> Data {
-        let (data, response) = try await NetworkManager.shared.get(path: path, sendJWT: sendJWT)
+    func genericGet(path: String, query: String? = nil, sendJWT: Bool = true) async throws -> Data {
+        let fullPath = query != nil ? "\(path)?\(query!)" : path
+        let (data, response) = try await NetworkManager.shared.get(path: fullPath, sendJWT: sendJWT)
         
         guard let _ = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Cook: Identifiable, Decodable {
+struct Cook: Identifiable, Codable {
     let id: Int
     let name: String
     let description: String

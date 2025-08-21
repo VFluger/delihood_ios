@@ -41,4 +41,5 @@ enum AlertContext {
     static let duplicateValue = AlertItem(title: "Value not available", description: "User with this value already exists. Please try another one.")
     //MARK: - Order
     static let cannotAddToOrder = AlertItem(title: "Cannot add to order", description: "We're unable to add your item to the order, you can have only items from one cook.")
+    static let cannotGetPaymentData = AlertItem(title: "Cannot get your payment", description: "We're unable to get details about your order and payment, please try again later.")
 }

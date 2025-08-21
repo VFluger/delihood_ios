@@ -41,7 +41,7 @@ final class FoodDetailViewModel: ObservableObject {
         do {
             if let order {
                 let decodedOrder = try JSONDecoder().decode(Order.self, from: order)
-                let indexOfItem = decodedOrder.items.firstIndex(where: { $0.foodId == food.id })
+                let indexOfItem = decodedOrder.items.firstIndex(where: { $0.food.id == food.id })
                 if let indexOfItem {
                     return decodedOrder.items[indexOfItem].quantity
                 }
@@ -54,18 +54,18 @@ final class FoodDetailViewModel: ObservableObject {
     }
     
     func addToOrder(quantity: Int = 1 , dismiss: @escaping () -> Void) {
-        let orderItem = OrderItem(foodId: food.id, quantity: quantity, name: food.name, price: food.price, note: notes)
+        let orderItem = OrderItem(food: food, quantity: quantity, note: notes)
         do {
             //Try to append to existing order
             var decodedOrder = try JSONDecoder().decode(Order.self, from: order ?? Data())
             //Order exists
-            guard cook.id == decodedOrder.cookId else {
+            guard cook.id == decodedOrder.cook?.id else {
                 //Ordering a food thats not from the same cook
                 alertItem = AlertContext.cannotAddToOrder
                 return
             }
             // Check if food already in order
-            if let existingIndex = decodedOrder.items.firstIndex(where: { $0.foodId == orderItem.foodId }) {
+            if let existingIndex = decodedOrder.items.firstIndex(where: { $0.food.id == orderItem.food.id }) {
                 // Food already exists in order, increase quantity
                 decodedOrder.items[existingIndex].quantity = quantity
                 
@@ -77,7 +77,7 @@ final class FoodDetailViewModel: ObservableObject {
                 // Food not in order, append new item
                 decodedOrder.items.append(orderItem)
             }
-            decodedOrder.cookId = cook.id
+            decodedOrder.cook = cook
             let encodedOrder = try JSONEncoder().encode(decodedOrder)
             order = encodedOrder
             
@@ -92,7 +92,7 @@ final class FoodDetailViewModel: ObservableObject {
         }catch {
             print(error)
             // Create a new order
-            let newOrder = Order(id: UUID(), items: [orderItem], cookId: cook.id, status: .notOrdered, tip: 0)
+            let newOrder = Order(id: UUID(), items: [orderItem], cook: cook, status: .notOrdered, tip: 0)
             let encodedOrder = try? JSONEncoder().encode(newOrder)
             order = encodedOrder
             
