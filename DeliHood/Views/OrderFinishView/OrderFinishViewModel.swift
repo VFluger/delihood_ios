@@ -43,6 +43,30 @@ final class OrderFinishViewModel: ObservableObject {
         itemsTotal + Int(order.tip) + deliveryFee
     }
     
+    var canProceed: Bool {
+        order.deliveryLocationLat != nil && order.deliveryLocationLng != nil && !order.items.isEmpty
+    }
+    
+    func sendOrder(paymentManager: PaymentSheetManager, orderStore: OrderStore) {
+        if !canProceed {
+            alertItem = AlertContext.cannotProceedOrder
+            return
+        }
+        Task {
+            do {
+                let resp = try await NetworkManager.shared.postOrder(order)
+                //set orderId from server
+                order.serverId = resp.orderId
+                order.status = .pending
+                
+                await paymentManager.configure(with: resp.clientSecret)
+                await paymentManager.present(orderStore: orderStore, order: order)
+            }catch {
+                alertItem = AlertContext.cannotSendOrder
+            }
+        }
+    }
+    
     func validateTip(newValue: String) {
             //Has to be int, not less than 0 and not more than 50
             if let intTip = Int(newValue), (0...50).contains(intTip) {

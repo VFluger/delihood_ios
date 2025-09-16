@@ -13,5 +13,5 @@ struct Food: Identifiable, Codable {
     var description: String
     var category: String
     var price: Int
-    var imageUrl: String
+    var image_url: String
 }

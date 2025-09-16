@@ -16,7 +16,7 @@ struct CookDetailView: View {
             LazyVStack {
                 //Card
                 HStack {
-                    CustomRemoteImage(UrlString: cook.imageUrl) {
+                    CustomRemoteImage(UrlString: cook.image_url) {
                         Image(systemName: "person.fill")
                     }
                     .frame(width: 100, height: 100)

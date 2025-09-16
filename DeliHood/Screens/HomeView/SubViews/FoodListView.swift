@@ -15,7 +15,7 @@ struct FoodListView: View {
     
     var body: some View {
             HStack {
-                FoodListImageView(urlString: food.imageUrl)
+                FoodListImageView(urlString: food.image_url)
                 
                 VStack(alignment: .leading) {
                     Text(food.name)
@@ -73,6 +73,6 @@ struct FoodListImageView: View {
 }
 
 #Preview {
-    FoodListView(food: Food(id: 1, name: "Pizza", description: "Pizza na pile asdf asdf asdf afd asdf", category: "italien", price: 100, imageUrl: "https://www.abeautifulplate.com/wp-content/uploadasdfs/2015/08/the-best-homemade-margherita-pizza-1-4.jpg"), cook: MockData.sampleCook)
+    FoodListView(food: Food(id: 1, name: "Pizza", description: "Pizza na pile asdf asdf asdf afd asdf", category: "italien", price: 100, image_url: "https://www.abeautifulplate.com/wp-content/uploadasdfs/2015/08/the-best-homemade-margherita-pizza-1-4.jpg"), cook: MockData.sampleCook)
 }
 

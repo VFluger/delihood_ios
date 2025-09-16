@@ -11,11 +11,10 @@ import SimpleKeychain
 class AuthManager {
     static let shared = AuthManager()
     
-//    private let authDomain = "https://delihood-backend.onrender.com"
-    private let authDomain = "http://localhost:8080"
+    private let authDomain = "https://delihood-backend.onrender.com"
+//    private let authDomain = "http://localhost:8080"
     
     private let keychain = SimpleKeychain(service: "com.VFluger.DeliHood", synchronizable: true)
-    private init() {}
     
     func login(email: String, password: String) async throws {
         let loginRequest = LoginRequest(email: email, password: password)
@@ -23,15 +22,13 @@ class AuthManager {
         let url = URL(string: "\(authDomain)/auth/login")!
         let (data, _) = try await performRequest(url: url, method: "POST", body: loginRequest)
         do {
-            let jsonObj = try JSONSerialization.jsonObject(with: data, options: .mutableContainers)
-            print(jsonObj)
             let tokens = try JSONDecoder().decode(AuthTokens.self, from: data)
             if !saveTokens(tokens) {
                 throw MainError.saveTokensFailed
             }
         } catch {
             // Check if wrong password or mail
-                try JSONDecoder().decode(WrongPassOrMailResp.self, from: data)
+                let _ = try JSONDecoder().decode(WrongPassOrMailResp.self, from: data)
                 throw MainError.wrongPassOrMail
         }
         

@@ -122,28 +122,19 @@ struct OrderFinishView: View {
                     .fontWeight(.bold)
                     
                     Button{
-                        Task {
-                            do {
-                                let resp = try await NetworkManager.shared.postOrder(vm.order)
-                                //set orderId from server
-                                vm.order.serverId = resp.orderId
-                                vm.order.status = .pending
-                                
-                                paymentManager.configure(with: resp.clientSecret)
-                                paymentManager.present(orderStore: orderStore, order: vm.order)
-                            }
-                        }
+                        vm.sendOrder(paymentManager: paymentManager, orderStore: orderStore)
                     }label: {
                         Text("Order")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .foregroundColor(.white)
-                            .glassEffect(
-                                .regular
-                                .tint(.brand.opacity(0.5))
-                                .interactive()
-                            )
+                            .foregroundColor(.white.opacity(vm.canProceed ? 1 : 0.5)) // dimmed
+                                    .glassEffect(
+                                        .regular
+                                        .tint(vm.canProceed ? .brand.opacity(0.5) : .gray.opacity(0.3)) // grayed out
+                                        .interactive()
+                                    )
                     }
+                    .disabled(!vm.canProceed)
                 }
                 .padding()
                 .background(.popup)
@@ -217,6 +208,7 @@ struct LocationOrderListView: View {
         Label(location.address, systemImage: selectedLocation == location ? "checkmark.circle.fill" : "circle")
             .onTapGesture {
                 withAnimation {
+                    //Set selected location AND order location
                     if selectedLocation == location {
                         selectedLocation = nil
                         order.deliveryLocationLat = nil

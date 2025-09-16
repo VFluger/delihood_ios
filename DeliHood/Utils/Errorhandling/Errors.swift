@@ -18,6 +18,7 @@ enum MainError: Error {
     case emailNotVerified
     case refreshFailed
     case duplicateValue
+    case notFound
 }
 
 enum GenericError: Error {

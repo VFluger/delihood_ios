@@ -38,7 +38,7 @@ class AuthStore: ObservableObject {
         do {
             //Try to get user info
             user = try await NetworkManager.shared.getMe()
-            //Success, logged in
+            //Success, user is logged in
             withAnimation(.easeOut) {
                 appState = .loggedIn
             }
@@ -56,16 +56,16 @@ class AuthStore: ObservableObject {
                 case MainError.emailNotVerified:
                     appState = .emailNotVerified
                 default:
-                    //Unknown error, log out
+                    //Unknown error or user never logged in, log out
                     appState = .loggedOut
                 }
             }
         }
     }
-    //If needed for whatever reason
+    //not really sync but doesnt need to be awaited
     func syncUpdateState() {
         Task {
-            await self.updateState()
+            await updateState()
         }
     }
 }

@@ -8,19 +8,20 @@
 import Foundation
 import GoogleSignIn
 
-//TODO: Error handling
 protocol OAuthVMProtocol {
     func googleSign() async -> AuthResult?
 }
 
 extension OAuthVMProtocol {
     func googleSign() async -> AuthResult? {
+        //Check if clientID in info.plist
         guard let clientID = Bundle.main.object(forInfoDictionaryKey: "CLIENT_ID") as? String else {
             return nil
         }
-
+        //Configurate
         let config = GIDConfiguration(clientID: clientID)
 
+        //Find rootViewController
         guard let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let rootViewController = await windowScene.windows.first?.rootViewController else {
             return nil
@@ -43,7 +44,6 @@ extension OAuthVMProtocol {
 
                 let idToken = user.idToken?.tokenString ?? ""
                 let accessToken = user.accessToken.tokenString
-                print("Google Sign-In success. ID Token: \(idToken), Access Token: \(accessToken)")
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
 
                 Task {

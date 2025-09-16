@@ -35,7 +35,7 @@ struct CookListView: View {
                 // The cook card
                 VStack(alignment: .leading) {
                     HStack {
-                        CustomRemoteImage(UrlString: cook.imageUrl, placeholderView: {
+                        CustomRemoteImage(UrlString: cook.image_url, placeholderView: {
                             Image(systemName: "person")
                                 .resizable()
                                 .scaledToFit()

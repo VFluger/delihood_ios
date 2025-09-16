@@ -14,9 +14,23 @@ struct LoggedOutWelcomeView: View {
         NavigationStack {
             VStack {
                 Spacer()
-                Image(systemName: "person.crop.circle.fill.badge.plus")
-                    .font(.system(size: 150))
-                Text("Login or create an account...")
+                Image("delihood-logo")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300, height: 300)
+                    .foregroundStyle(.brand)
+                    .padding(.bottom, -50)
+                HStack(spacing: 0) {
+                    Text("Order food from")
+                    Text(" real ")
+                        .bold()
+                    Text("people!")
+                }
+                .font(.title)
+                Text("Start ordering today.")
+                    .font(.title3)
+                    .padding(10)
                 Spacer()
                 GeometryReader { geo in
                     VStack {

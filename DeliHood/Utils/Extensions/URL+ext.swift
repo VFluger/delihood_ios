@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Gets query with name token from the URL
 extension URL {
     func getToken() -> String? {
         URLComponents(url: self, resolvingAgainstBaseURL: false)?

@@ -41,8 +41,11 @@ enum AlertContext {
     static let duplicateValue = AlertItem(title: "Value not available", message: "User with this value already exists. Please try another one.")
     //MARK: - Order
     static let cannotAddToOrder = AlertItem(title: "Cannot add to order", message: "We're unable to add your item to the order, you can have only items from one cook.")
+    static let cannotProceedOrder = AlertItem(title: "Cannot proceed with your order", message: "Check if you set an address and try again.")
     static let cannotGetPaymentData = AlertItem(title: "Cannot get your payment", message: "We're unable to get details about your order and payment, please try again later.")
+    static let cannotSendOrder = AlertItem(title: "Cannot send order", message: "We're unable to send your order at the moment, please try again later.")
     static let cannotCancel = AlertItem(title: "Cannot cancel order", message: "We're unable to cancel your order at the moment, please restart the app.")
+    static let noLocation = AlertItem(title: "No location access", message: "Please enable location access in settings so we can find the nearest cook for you.")
     //MARK: - Demo project alerts
     static let getSupport = AlertItem(title: "No support in demo", message: "Building entire support FAQ or live chat is out of the scope of this app.")
 }

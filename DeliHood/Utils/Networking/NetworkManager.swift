@@ -13,8 +13,8 @@ enum AuthResult {
 }
 
 class NetworkManager {
-//    let baseURL = "https://delihood-backend.onrender.com"
-    let baseURL = "http://localhost:8080"
+    let baseURL = "https://delihood-backend.onrender.com"
+//    let baseURL = "http://localhost:8080"
     
     static let shared = NetworkManager()
     
@@ -70,13 +70,16 @@ class NetworkManager {
     }
     
     //MARK: - Main Get Of Content
-    func getMainScreen() async throws -> HomeViewResponse {
-        let (data, _ ) = try await NetworkManager.shared.get(path: "/testing-data")
-        
+    func getMainScreen(lat: Double, lng: Double) async throws -> HomeViewResponse {
+        let (data, _) = try await NetworkManager.shared.get(path: "/api/main-screen?lat=\(lat)&lng=\(lng)")
+        let jsonObj = try? JSONSerialization.jsonObject(with: data)
+        print(jsonObj ?? "no jsonObj")
         do {
             let decodedData = try JSONDecoder().decode(HomeViewResponse.self, from: data)
+            print(decodedData)
             return decodedData
         }catch {
+            print(error)
             throw MainError.cannotDecode
         }
     }
@@ -97,7 +100,6 @@ class NetworkManager {
         }catch {
             print("User not registered, try decode")
             let userData = try JSONDecoder().decode(GoogleSignRegisterResponse.self, from: data)
-            print("Decode success")
             //User not registered
             return .needsRegistration(userData, token: token)
         }
@@ -128,10 +130,7 @@ class NetworkManager {
     func genericPost<T: Encodable>(path: String, body: T, sendJWT: Bool = true) async throws -> Data {
         let (data, response) = try await NetworkManager.shared.post(path: path, body: body, sendJWT: sendJWT)
         
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw URLError(.badServerResponse)
-        }
-        
+        // Check if errors
         let decoded = try JSONDecoder().decode(ErrorStruct.self, from: data)
         
         if let errorMsg = decoded.error, !errorMsg.isEmpty {
@@ -147,12 +146,9 @@ class NetworkManager {
         let fullPath = query != nil ? "\(path)?\(query!)" : path
         let (data, response) = try await NetworkManager.shared.get(path: fullPath, sendJWT: sendJWT)
         
-        guard let _ = response as? HTTPURLResponse else {
-            throw URLError(.badServerResponse)
-        }
-        
         let decoded = try JSONDecoder().decode(ErrorStruct.self, from: data)
         
+        // Check if error
         if let errorMsg = decoded.error, !errorMsg.isEmpty {
             throw GenericError.error(errorMsg)
         } else {
@@ -199,6 +195,9 @@ class NetworkManager {
             }
         case 403:
             throw MainError.emailNotVerified
+        case 404:
+//            throw MainError.notFound
+            return (data, response)
         default:
             throw URLError(.badServerResponse)
         }

@@ -10,13 +10,23 @@ struct HomeView: View {
     @EnvironmentObject var authStore: AuthStore
     @StateObject var vm = HomeViewModel()
     
+    @StateObject var locationManager = LocationManager()
+    
+    private var userLat: Double? {
+        locationManager.lastLocation?.coordinate.latitude
+    }
+    
+    private var userLng: Double? {
+        locationManager.lastLocation?.coordinate.longitude
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
                 ScrollView {
                     LazyVStack {
                         //If alert, show error view
-                        if vm.alertItem == nil {
+                        if vm.isError == false {
                             ForEach(vm.mainScreenData ?? []) { cook in
                                 CookListView(cook: cook,
                                              selectedFilter: $vm.selectedFilter,
@@ -28,11 +38,11 @@ struct HomeView: View {
                     }
                 }
                 .refreshable {
-                    vm.getData()
+                    vm.getData(lat: userLat, lng: userLng)
                 }
                 Spacer()
             }
-            .navigationTitle(vm.alertItem == nil ? "Home" : "Error")
+            .navigationTitle(!vm.isError ? "Home" : "Error")
             //Settings icon
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -65,13 +75,14 @@ struct HomeView: View {
                     }
                 }
             }
-            .onAppear { vm.getData() }
+            .task { vm.getData(lat: userLat, lng: userLng) }
             .sheet(isPresented: $vm.isOrderPresented) {
                 OrderFinishView()
             }
             //If order in AppStorage changes, get again (filters the cooks)
+            //TODO: MAKE IT FILTER EXISTING DATA - SHOUDLNT CONTACT SERVER ALL THE TIME
             .onChange(of: vm.orderData) {
-                            vm.getData()
+                            vm.getData(lat: userLat, lng: userLng)
                         }
             .alert(item: $vm.alertItem) { alert in
                 Alert(title: Text(alert.title),

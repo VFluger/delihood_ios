@@ -24,6 +24,7 @@ class OrderStore: ObservableObject {
     init() {
         Task {
             do {
+                try await Task.sleep(nanoseconds: 20_000_000) //Waiting for AuthStore to finish
                 try await self.updateStatus()
             } catch {
                 print("updateStatus failed:", error)
@@ -32,16 +33,18 @@ class OrderStore: ObservableObject {
     }
     
     func updateStatus() async throws {
+        // Checks last order exists and isnt delivered
+        // If yes then asign to currentOrder
         let orders = try await NetworkManager.shared.getOrders()
         let lastOrder = orders.data.last
         guard let lastOrder = lastOrder else {
-            print("No order")
+            print("No orders")
             currentOrder = nil
             paymentStatus = .notStarted
             return
         }
         if lastOrder.status == .delivered {
-            print("No order")
+            print("No active order")
             currentOrder = nil
             paymentStatus = .notStarted
             return
