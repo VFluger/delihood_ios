@@ -15,6 +15,8 @@ struct OrderView: View {
     @State private var showSettings = false
     @State private var alertItem: AlertItem?
     
+    @State var liveActivityVm = LiveActivityViewModel()
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -59,29 +61,45 @@ struct OrderView: View {
                     try await orderStore.updateStatus()
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: AccountView()) {
-                        CustomRemoteImage(UrlString: authStore.user?.imageUrl) {
-                            Image(systemName: "person")
-                                .foregroundStyle(.primary)
-                        }
+            .task {
+                if let order = orderStore.currentOrder {
+                    //Update variables in vm
+                    liveActivityVm.orderId = order.serverId ?? -1
+                    liveActivityVm.orderStatus = order.status.rawValue
+                    
+                    //If live activity exists, update it
+                    if liveActivityVm.orderActivity != nil {
+                        liveActivityVm.updateLiveActivity()
+                    //If not create it
+                    }else {
+                        liveActivityVm.startLiveActivity()
                     }
                 }
             }
-            .overlay(alignment: .bottomTrailing) {
-                Button {
-                    alertItem = AlertContext.getSupport
-                } label: {
-                    Image(systemName: "questionmark.message.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundStyle(Color.label)
-                        .frame(width: 20, height: 20)
-                        .padding()
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: AccountView()) {
+                        CustomRemoteImage(UrlString: authStore.user?.image_url) {
+                            Image(systemName: "person")
+                                .foregroundStyle(.primary)
+                        }
+                        .frame(width: 30, height: 30)
+                        .clipShape(Circle())
+                    }
                 }
-                .glassEffect(.regular.tint(Color.white.opacity(0.05)).interactive())
-                .padding()
+                ToolbarSpacer(placement: .bottomBar)
+                ToolbarItem(placement: .bottomBar) {
+                    Button {
+                        alertItem = AlertContext.getSupport
+                    } label: {
+                        Image(systemName: "questionmark.message.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundStyle(Color.label)
+                            .frame(width: 20, height: 20)
+                            .padding()
+                    }
+                }
             }
             .alert(item: $alertItem) {alert in
                 Alert(title: Text(alert.title), message: Text(alert.message))

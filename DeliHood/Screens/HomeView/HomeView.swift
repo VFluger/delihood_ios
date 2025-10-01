@@ -32,6 +32,8 @@ struct HomeView: View {
                                              selectedFilter: $vm.selectedFilter,
                                              searchText: $vm.searchText)
                             }
+                            Color.clear
+                                    .frame(height: 200)
                         } else {
                             ErrorView()
                         }
@@ -49,10 +51,12 @@ struct HomeView: View {
                     Button {
                         vm.showAccount = true
                     } label: {
-                        CustomRemoteImage(UrlString: authStore.user?.imageUrl) {
+                        CustomRemoteImage(UrlString: authStore.user?.image_url) {
                             Image(systemName: "person")
                                 .foregroundStyle(.primary)
                         }
+                        .frame(width: 30, height: 30)
+                        .clipShape(Circle())
                     }
                 }
             }

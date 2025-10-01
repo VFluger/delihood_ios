@@ -32,8 +32,7 @@ struct HelpView: View {
                     .padding(10)
                 }
                 Section("Disclamer") {
-                    Text("Making a chat support or FAQ is beyond the scope of this app")
-                        .multilineTextAlignment(.center)
+                    Text("Making a chat support or FAQ is beyond the scope of this demo app")
                         .fontWeight(.semibold)
                 }
             }

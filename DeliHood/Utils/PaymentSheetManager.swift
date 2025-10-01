@@ -7,20 +7,16 @@ class PaymentSheetManager: ObservableObject {
 
     // Configure with the client secret
     func configure(with clientSecret: String) {
-        print("Configuring payment sheet with client secret: \(clientSecret.prefix(10))...")
         
         var configuration = PaymentSheet.Configuration()
         configuration.merchantDisplayName = "DeliHood"
-        // Optional: Add a return URL for 3D Secure authentication
-//        configuration.returnURL = "delihood://stripe-redirect"
         
         paymentSheet = PaymentSheet(paymentIntentClientSecret: clientSecret, configuration: configuration)
-        print("Payment sheet configured successfully")
     }
 
     func present(orderStore: OrderStore, order: Order) {
         guard let paymentSheet = paymentSheet else {
-            print("Payment sheet not configured")
+            //Payment sheet not configured
             return
         }
         
@@ -36,22 +32,20 @@ class PaymentSheetManager: ObservableObject {
             rootVC = presented
         }
 
-        print("Presenting payment sheet...")
         paymentSheet.present(from: rootVC) { result in
             
             orderStore.currentOrder = order
             Task {
+                // Update after delay to let Stripe process it...
+                try await Task.sleep(nanoseconds: 2_000_000_000) //2s
                 try await orderStore.updateStatus()
             }
             switch result {
             case .completed:
-                print("Payment complete")
                 orderStore.paymentStatus = .succeeded
             case .canceled:
-                print("Payment canceled")
                 orderStore.paymentStatus = .canceled
             case .failed(let error):
-                print("Payment failed: \(error)")
                 orderStore.paymentStatus = .failed(error: error)
             }
         }

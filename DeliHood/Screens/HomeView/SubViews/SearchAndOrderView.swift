@@ -30,7 +30,7 @@ struct SearchAndOrderView: View {
                 ScrollView(.horizontal) {
                     HStack {
                         ForEach(CategoryContext.allCases, id: \.self) {data in
-                            categoryChip(data: data, selectedFilter: $selectedFilter)
+                            CategoryChip(data: data, selectedFilter: $selectedFilter)
                             
                         }
                     }
@@ -83,7 +83,7 @@ struct SearchAndOrderView: View {
     }
 }
 
-struct categoryChip: View {
+struct CategoryChip: View {
     var data: CategoryContext
     @Binding var selectedFilter: CategoryContext?
     

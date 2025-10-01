@@ -20,7 +20,7 @@ struct DeliHoodApp: App {
     @StateObject var authStore = AuthStore()
     @StateObject var orderStore = OrderStore()
     @StateObject var paymentManager = PaymentSheetManager()
-    
+ 
     //Init with stripe publishableKey
     init() {
             StripeAPI.defaultPublishableKey = "pk_test_51RsJbVCG0zW7ss1SthneT3YrP5Ru3wxNiMfv3NKNgXnP62IyuN73mhEGuernZI0kqJ2owNxRbVRdiBOhGFZpPxk900T1A8rqZ9"
@@ -35,6 +35,7 @@ struct DeliHoodApp: App {
                     .environmentObject(orderStore)
                     .environmentObject(paymentManager)
             }
+            
             .onOpenURL { url in
                 handleIncomingURL(url)
             }

@@ -19,7 +19,6 @@ struct NotificationsView: View {
         List {
             Section("Disclaimer") {
                 Text("This is just a preview, no backend changes will take place")
-                    .multilineTextAlignment(.center)
                     .fontWeight(.semibold)
             }
             Section {

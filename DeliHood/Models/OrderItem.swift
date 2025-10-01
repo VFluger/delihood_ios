@@ -21,7 +21,7 @@ struct OrderItemHistory: Codable {
     let food_id: Int
     let name: String
     let description: String
-    let imageurl: String
+    let image_url: String
     let quantity: Int
     let price_at_order: Int
 }

@@ -36,7 +36,7 @@ struct OrderStatusView: View {
                 .lineLimit(1)
                 .layoutPriority(1)
         }
-        .padding()
+        .padding(5)
         .padding(.horizontal, 10)
         .background(.ultraThinMaterial)
         .clipShape(Capsule())

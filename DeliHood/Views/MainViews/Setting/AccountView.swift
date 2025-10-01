@@ -15,13 +15,7 @@ struct AccountView: View {
     var body: some View {
         //Shouldn't really happen but just to be sure
         if authStore.user == nil {
-            VStack {
-                Text("Cannot show Account View")
-                    .font(.title)
-                    .fontWeight(.semibold)
-                Text("Please try again later.")
-                    .padding(10)
-            }
+            ContentUnavailableView("Cannot get Account", systemImage: "xmark.app", description: Text("Please refresh the app"))
         }else {
             List {
                 Section {
@@ -60,7 +54,11 @@ struct AccountView: View {
                     title: Text("Log Out"),
                     message: Text("Are you sure you want to log out? You will need to sign in again to use your account."),
                     primaryButton: .destructive(Text("Log out")) {
-                        AuthManager.shared.logout()
+                        Task {
+                            let isLoggedOut = await AuthManager.shared.logout()
+                            guard isLoggedOut else {return}
+                            authStore.appState = .loggedOut
+                        }
                     },
                     secondaryButton: .cancel()
                 )
@@ -74,7 +72,7 @@ struct AccountInfoView: View {
     
     var body: some View {
         HStack {
-            CustomRemoteImage(UrlString: user.imageUrl, placeholderView: {
+            CustomRemoteImage(UrlString: user.image_url, placeholderView: {
                 Image(systemName: "person")
                     .scaleEffect(1.5)
             })

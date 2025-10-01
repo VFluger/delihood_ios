@@ -37,7 +37,7 @@ struct LoggedOutWelcomeView: View {
                         NavigationLink(destination: LoginView()) {
                             Text("Login")
                                 .font(.title2)
-                                .foregroundStyle(.black)
+                                .foregroundStyle(Color.label)
                                 .fontWeight(.semibold)
                                 .frame(width: geo.size.width * 0.8)
                                 .padding(.vertical, 10)
@@ -51,7 +51,7 @@ struct LoggedOutWelcomeView: View {
                         NavigationLink(destination: RegisterView()) {
                             Text("Register")
                                 .font(.title2)
-                                .foregroundStyle(.black)
+                                .foregroundStyle(Color.label)
                                 .fontWeight(.semibold)
                                 .frame(width: geo.size.width * 0.8)
                                 .padding(.vertical, 10)

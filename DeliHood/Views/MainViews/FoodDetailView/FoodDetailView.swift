@@ -35,35 +35,35 @@ struct FoodDetailView: View {
                     .minimumScaleFactor(0.5)
                     .multilineTextAlignment(.center)
                     .padding(.vertical)
-                
-                CategoryView(string: vm.food.category)
-                    .scaleEffect(1.2)
-                    .foregroundStyle(.brand)
-                
                 HStack {
-                    CustomRemoteImage(UrlString: vm.cook.image_url) {
-                        Image(systemName: "person")
-                            .resizable()
-                            .scaledToFit()
+                    CategoryView(string: vm.food.category)
+                        .scaleEffect(1.2)
+                        .foregroundStyle(.brand)
+                    Text("•")
+                        .font(.title)
+                        .offset(x: 10)
+                    HStack {
+                        CustomRemoteImage(UrlString: vm.cook.image_url) {
+                            Image(systemName: "person")
+                                .resizable()
+                                .scaledToFit()
+                        }
+                        .frame(width: 30, height: 30)
+                        .clipShape(Circle())
+                        
+                        NavigationLink(destination: {
+                            CookDetailView(cook: vm.cook)
+                        }, label: {
+                            Text(vm.cook.name)
+                                .minimumScaleFactor(0.5)
+                                .padding(.horizontal, 5)
+                                .foregroundStyle(Color.label)
+                        })
                     }
-                    .frame(width: 30, height: 30)
-                    .clipShape(Circle())
-                    
-                    NavigationLink(destination: {
-                        CookDetailView(cook: vm.cook)
-                    }, label: {
-                        Text(vm.cook.name)
-                            .minimumScaleFactor(0.5)
-                            .padding(.horizontal, 5)
-                            .foregroundStyle(Color.label)
-                    })
-                    
+                    .padding(5)
+                    .background(.popup)
+                    .clipShape(Capsule())
                 }
-                .padding(5)
-                .background(.popup)
-                .clipShape(Capsule())
-                .padding(.top, 10)
-                .padding(.bottom, 20)
             }
             // Options
             VStack(alignment: .leading) {
@@ -143,7 +143,7 @@ struct FoodDetailView: View {
                 }label: {
                     Image(systemName: "star")
                 }
-                .padding(5)
+                .padding(2)
             }
             ToolbarItem(placement: .bottomBar) {
                 Button {
@@ -151,10 +151,10 @@ struct FoodDetailView: View {
                 }label: {
                     Image(systemName: "square.and.arrow.up")
                 }
-                .padding(5)
+                .padding(2)
             }
         }
-        .blur(radius: vm.showSuccess ? 10 : 0)
+        .blur(radius: vm.showSuccess ? 5 : 0)
         .overlay {
             if vm.showSuccess {
                 FoodAddedToOrderView()

@@ -88,6 +88,7 @@ struct EmailTextView: View {
     var body: some View {
         TextField("Email", text: $vm.email)
             .brandStyle(isFieldValid: vm.isEmailValid)
+            .textContentType(.emailAddress)
             .focused($focusedField, equals: .email)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
@@ -119,6 +120,7 @@ struct PasswordTextView: View {
     var body: some View {
         SecureField("Password", text: $vm.password)
             .brandStyle(isFieldValid: vm.isPasswordValid)
+            .textContentType(.password)
             .focused($focusedField, equals: .password)
             .onChange(of: vm.password) {oldValue, newValue in
                 withAnimation(.easeOut(duration: 0.5)) {

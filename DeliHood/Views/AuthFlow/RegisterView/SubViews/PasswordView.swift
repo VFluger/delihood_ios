@@ -27,6 +27,7 @@ struct PasswordView: View {
         
         SecureField("Password", text: $vm.password)
             .brandStyle(isFieldValid: isPasswordValid)
+            .textContentType(.newPassword)
             .focused($focusedField, equals: .password)
             .onChange(of: vm.password) { oldValue, newValue in
                 isPasswordValid = Validator.validatePassword(newValue)
@@ -42,6 +43,7 @@ struct PasswordView: View {
         
         SecureField("Confirm Password", text: $vm.confirmPassword)
             .brandStyle(isFieldValid: isConfirmValid)
+            .textContentType(.newPassword)
             .focused($focusedField, equals: .confirmPassword)
             .onChange(of: vm.confirmPassword) { oldValue, newValue in
                 isConfirmValid = vm.password == newValue

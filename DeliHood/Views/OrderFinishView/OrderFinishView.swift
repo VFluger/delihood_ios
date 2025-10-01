@@ -14,6 +14,7 @@ struct OrderFinishView: View {
     @Query var locationModels: [Location]
     
     @Environment(\.modelContext) var context
+    @Environment(\.dismiss) var dismiss
     
     @StateObject var vm = OrderFinishViewModel()
     @EnvironmentObject var paymentManager: PaymentSheetManager
@@ -28,10 +29,11 @@ struct OrderFinishView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 12)
                         .padding(.horizontal)
-                    
-                    ForEach($vm.order.items) { $orderItem in
-                        OrderItemListView(orderItem: $orderItem, order: $vm.order)
-                    }
+
+                        ForEach($vm.order.items) { $orderItem in
+                            OrderItemListView(orderItem: $orderItem, order: $vm.order)
+                        }
+                        .padding(.horizontal, 10)
                     
                     Text("Delivery address:")
                         .font(.title2).bold()
@@ -47,13 +49,18 @@ struct OrderFinishView: View {
                         .padding(.bottom, 10)
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        ForEach(Array(locationModels.enumerated()), id: \.element.id) { index, location in
-                            LocationOrderListWithBtnsView(location: location, index: index, totalCount: locationModels.count, vm: vm)
+                        if (locationModels.isEmpty) {
+                            ContentUnavailableView("No address added yet", systemImage: "mappin.slash")
+                        }else {
+                            ForEach(Array(locationModels.enumerated()), id: \.element.id) { index, location in
+                                LocationOrderListWithBtnsView(location: location, index: index, totalCount: locationModels.count, vm: vm)
+                            }
                         }
                     }
                     .padding()
                     .background(.thinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 30))
+                    .padding(.horizontal, 10)
                     
                     Label("Add a new address", systemImage: "plus")
                         .fontWeight(.semibold)
@@ -143,6 +150,9 @@ struct OrderFinishView: View {
             .onAppear {
                 vm.decodeOrder(orderData: orderData)
             }
+            .onChange(of: vm.order.items) {oldValue, newValue in
+                if vm.order.items.isEmpty {dismiss()}
+            }
             .sheet(item: $vm.showUpdateSheet) { location in
                 UpdateAddressView(locationModel: location)
                     .presentationDetents([.height(600)])
@@ -175,6 +185,7 @@ struct OrderItemListView: View {
                     if quantity == 0 {
                         //Remove item from order
                         order.items.removeAll(where: { $0.id == orderItem.id })
+                        //If no items, delete orderData
                         if order.items.count == 0 {
                             orderData = Data()
                         }

@@ -9,34 +9,21 @@ import SwiftUI
 
 struct OrderHistoryView: View {
     @State private var orders: [OrderHistory] = []
-    
-    private var numOfOrders: Int {
-        orders.count
-    }
+    @State private var isLoading = false
     
     private var tippedDrivers: Int {
         orders.reduce(0) { $0 + $1.tip }
     }
-
-    private var moneySpend: Int {
-        orders.reduce(0) { $0 + $1.total_price }
-    }
     
     var body: some View {
-        NavigationView {
+        VStack {
             if orders.isEmpty {
                 ContentUnavailableView(
                     "No orders",
                     systemImage: "receipt",
-                    description: Text("You have no orders on your account.\nOrder something!")
-                )
-                .task {
-                    await loadOrders()
-                }
-                .refreshable {
-                    await loadOrders()
-                }
-                .navigationTitle("Orders history")
+                    description: Text("You have no orders on your account.\nOrder something!"))
+            } else if isLoading {
+                LoadingOverlayView()
             } else {
                 List {
                     // Stats Section
@@ -44,27 +31,7 @@ struct OrderHistoryView: View {
                         .font(.title.bold())
                         .padding(.vertical, 2)
                     ) {
-                        VStack(alignment: .leading, spacing: 15) {
-                            HStack {
-                                Image(systemName: "cart.fill")
-                                Text("Number of orders: ")
-                                Text("\(orders.count)")
-                                    .bold()
-                            }
-                            HStack {
-                                Image(systemName: "dollarsign.circle.fill")
-                                Text("Tipped drivers: ")
-                                Text("\(tippedDrivers) Kč")
-                                    .bold()
-                            }
-                            HStack {
-                                Image(systemName: "banknote.fill")
-                                Text("Money spent: ")
-                                Text("\(moneySpend) Kč")
-                                    .bold()
-                            }
-                        }
-                        .padding(.vertical, 5)
+                        OrderStats(numOfOrders: orders.count, tips: tippedDrivers)
                     }
                     // Orders Section
                     Section(
@@ -84,26 +51,29 @@ struct OrderHistoryView: View {
                                     Text("Date")
                                         .font(.headline)
                                         .frame(width: 100, alignment: .trailing)
+                                        .offset(x: -50)
                                 }
                                 .padding(.horizontal, 30)
                             }
                     ) {
-                        ForEach(orders) { order in
+                        ForEach(orders.reversed()) { order in
                             NavigationLink(destination: OrderHistoryDetailView(order: order)) {
                                 OrderListView(order: order)
                             }
                         }
                     }
                 }
-                .task {
-                    await loadOrders()
-                }
-                .refreshable {
-                    await loadOrders()
-                }
-                .navigationTitle("Orders history")
             }
         }
+        .task {
+            isLoading = true
+            await loadOrders()
+            isLoading = false
+        }
+        .refreshable {
+            await loadOrders()
+        }
+        .navigationTitle("Orders history")
     }
     
     private func loadOrders() async {
@@ -115,6 +85,49 @@ struct OrderHistoryView: View {
     }
 }
 
+struct OrderStats: View {
+    let numOfOrders: Int
+    let tips: Int
+    
+    var body: some View {
+        HStack(spacing: 15) {
+            Spacer()
+            VStack {
+                Text(numOfOrders,
+                     format: .number.notation(.compactName).precision(.fractionLength(0...1)))
+                    .font(.title.bold())
+                HStack(spacing: 2) {
+                    Image(systemName: "cart")
+                    Text("# Orders")
+                }
+                .foregroundStyle(Color.label.opacity(0.7))
+                .font(.footnote)
+                .lineLimit(1)
+            }
+            Spacer()
+            VStack {
+                HStack(alignment: .bottom, spacing: 5) {
+                    Text(tips, format: .number.notation(.compactName).precision(.fractionLength(0...1)))
+                        .font(.title.bold())
+                    Text("Kč")
+                        .font(.caption.bold())
+                        .padding(.bottom, 5)
+                    
+                }
+                HStack(spacing: 2) {
+                    Image(systemName: "dollarsign.circle")
+                    Text("Tips")
+                }
+                .foregroundStyle(Color.label.opacity(0.7))
+                .lineLimit(1)
+                .font(.footnote)
+            }
+            Spacer()
+        }
+        .padding(.vertical, 5)
+    }
+}
+
 #Preview {
-    OrderHistoryView()
+    OrderStats(numOfOrders: 1000234, tips: 10510)
 }

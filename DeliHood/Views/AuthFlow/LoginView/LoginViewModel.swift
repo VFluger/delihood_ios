@@ -28,12 +28,12 @@ final class LoginViewModel: ObservableObject, OAuthVMProtocol {
                 try await AuthManager.shared.login(email: email, password: password)
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
                 //SUCESS: LOGGED IN
-                print("logged in")
                 
             }catch {
                 if let urlError = error as? URLError, urlError.code == .notConnectedToInternet {
                     hasNoConnection = true
                 } else {
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
                     switch error {
                     case MainError.networkError(_):
                         alertItem = AlertContext.networkFail

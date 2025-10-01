@@ -85,7 +85,7 @@ final class FoodDetailViewModel: ObservableObject {
                 withAnimation {
                     showSuccess = true
                 }
-                try await Task.sleep(nanoseconds: 2_000_000_000)
+                try await Task.sleep(nanoseconds: 1_000_000_000)
                 dismiss()
             }
             

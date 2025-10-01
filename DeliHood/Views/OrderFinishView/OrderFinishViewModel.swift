@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 
+@MainActor
 final class OrderFinishViewModel: ObservableObject {
     
     @Published var order = MockData.order
@@ -59,17 +60,18 @@ final class OrderFinishViewModel: ObservableObject {
                 order.serverId = resp.orderId
                 order.status = .pending
                 
-                await paymentManager.configure(with: resp.clientSecret)
-                await paymentManager.present(orderStore: orderStore, order: order)
+                paymentManager.configure(with: resp.clientSecret)
+                paymentManager.present(orderStore: orderStore, order: order)
             }catch {
+                print(error)
                 alertItem = AlertContext.cannotSendOrder
             }
         }
     }
     
-    func validateTip(newValue: String) {
-            //Has to be int, not less than 0 and not more than 50
-            if let intTip = Int(newValue), (0...50).contains(intTip) {
+    func validateTip( newValue: String) {
+            //Has to be int, not less than 0 and not more than 100
+            if let intTip = Int(newValue), (0...100).contains(intTip) {
                 tip = newValue
                 order.tip = intTip
                 //Check if empty, set to 0
@@ -78,7 +80,7 @@ final class OrderFinishViewModel: ObservableObject {
                 order.tip = 0
                 //Dont allow
             }else {
-                return
+                tip = tip
             }
     }
     

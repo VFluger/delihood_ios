@@ -36,7 +36,6 @@ final class EditFieldViewModel: ObservableObject {
     
     func save(currentValue: Binding<String>, dismiss: @escaping () -> Void) {
         if currentValue.wrappedValue == newValue { return dismiss() }
-        if fieldKey == .deliveryAddress { return }
         if newValue.isEmpty {
             alertItem = AlertContext.invalidValue
             return

@@ -13,8 +13,8 @@ enum AuthResult {
 }
 
 class NetworkManager {
-    let baseURL = "https://delihood-backend.onrender.com"
-//    let baseURL = "http://localhost:8080"
+//    let baseURL = "https://delihood-backend.onrender.com"
+    let baseURL = "http://localhost:8080"
     
     static let shared = NetworkManager()
     
@@ -61,6 +61,7 @@ class NetworkManager {
     
     func postOrder (_ order: Order) async throws -> OrderPaymentResponse {
         let data = try await NetworkManager.shared.genericPost(path: "/api/new-order", body: order)
+        print(try JSONSerialization.jsonObject(with: data))
         return try JSONDecoder().decode(OrderPaymentResponse.self, from: data)
     }
     
@@ -72,8 +73,6 @@ class NetworkManager {
     //MARK: - Main Get Of Content
     func getMainScreen(lat: Double, lng: Double) async throws -> HomeViewResponse {
         let (data, _) = try await NetworkManager.shared.get(path: "/api/main-screen?lat=\(lat)&lng=\(lng)")
-        let jsonObj = try? JSONSerialization.jsonObject(with: data)
-        print(jsonObj ?? "no jsonObj")
         do {
             let decodedData = try JSONDecoder().decode(HomeViewResponse.self, from: data)
             print(decodedData)
@@ -128,7 +127,7 @@ class NetworkManager {
     //MARK: - Helpers, checking if { error: "" } is present
     @discardableResult
     func genericPost<T: Encodable>(path: String, body: T, sendJWT: Bool = true) async throws -> Data {
-        let (data, response) = try await NetworkManager.shared.post(path: path, body: body, sendJWT: sendJWT)
+        let (data, _) = try await NetworkManager.shared.post(path: path, body: body, sendJWT: sendJWT)
         
         // Check if errors
         let decoded = try JSONDecoder().decode(ErrorStruct.self, from: data)

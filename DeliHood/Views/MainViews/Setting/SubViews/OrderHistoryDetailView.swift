@@ -12,6 +12,7 @@ struct OrderHistoryDetailView: View {
     
     @State private var orderDetail: OrderHistory?
     @State private var alertItem: AlertItem?
+    @State private var isLoading = true
     
     private var cancellable: Bool {
         orderDetail?.status == .pending
@@ -48,7 +49,7 @@ struct OrderHistoryDetailView: View {
                     HStack {
                         Text("Img")
                             .fontWeight(.semibold)
-                            .frame(width: 65) // same width as your image
+                            .frame(width: 65)
                         Spacer()
                         Text("Name")
                             .fontWeight(.semibold)
@@ -90,11 +91,7 @@ struct OrderHistoryDetailView: View {
                 if cancellable {
                     Button {
                         Task {
-                            do {
-                                try await NetworkManager.shared.cancelOrder(id: orderDetail.id)
-                            }catch {
-                                alertItem = AlertContext.cannotCancel
-                            }
+                            await cancelOrder()
                         }
                     }label: {
                         Label("Cancel", systemImage: "xmark.app")
@@ -106,17 +103,40 @@ struct OrderHistoryDetailView: View {
                     .disabled(!cancellable)
                 }
             }
+            else if isLoading {
+                LoadingOverlayView()
+            }
+            else {
+                ContentUnavailableView("Cannot get order details", systemImage: "receipt", description: Text("Cannot get this orders details, please contact our support."))
+            }
         }
         .task {
-            do {
-                orderDetail = try await NetworkManager.shared.getOrderDetails(id: order.id).data
-                print(order)
-            }catch {
-                print(error)
-            }
+            await loadDetails()
+        }
+        .refreshable {
+            await loadDetails()
         }
         .alert(item: $alertItem) {alert in
             Alert(title: Text(alert.title), message: Text(alert.message))
+        }
+    }
+    func loadDetails() async {
+        do {
+            isLoading = true
+            orderDetail = try await NetworkManager.shared.getOrderDetails(id: order.id).data
+            isLoading = false
+            print(order)
+        }catch {
+            isLoading = false
+            print(error)
+            orderDetail = nil
+        }
+    }
+    func cancelOrder() async {
+        do {
+            try await NetworkManager.shared.cancelOrder(id: orderDetail?.id ?? -1)
+        }catch {
+            alertItem = AlertContext.cannotCancel
         }
     }
 }

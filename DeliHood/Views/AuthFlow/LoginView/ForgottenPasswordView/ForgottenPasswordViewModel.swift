@@ -10,7 +10,6 @@ import SwiftUI
 @MainActor
 final class ForgottenPasswordViewModel: ObservableObject {
     @Published var email: String = ""
-    
     @Published var alertItem: AlertItem? = nil
     
     func submit() {
@@ -20,6 +19,7 @@ final class ForgottenPasswordViewModel: ObservableObject {
                 alertItem = AlertContext.forgottenPasswordSend
             }catch {
                 print(error)
+                alertItem = AlertContext.forgottenPasswordSend
             }
         }
     }

@@ -14,6 +14,7 @@ struct EmailView: View {
     var body: some View {
         TextField("Email Address", text: $text)
             .brandStyle(isFieldValid: isEmailValid != nil ? isEmailValid! : true)
+            .textContentType(.emailAddress)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .keyboardType(.emailAddress)

@@ -49,6 +49,7 @@ struct EmailAndPhoneView: View {
         
         TextField("Phone Number", text: $vm.phoneNum)
             .brandStyle(isFieldValid: isPhoneValid)
+            .textContentType(.telephoneNumber)
             .autocorrectionDisabled()
             .keyboardType(.phonePad)
             .textInputAutocapitalization(.none)

@@ -108,13 +108,18 @@ class AuthManager {
         }
         return try decode(jwt: token)
     }
-    
-    func logout() {
+    @discardableResult
+    func logout() async -> Bool {
         do {
             try keychain.deleteItem(forKey: "accessToken")
             try keychain.deleteItem(forKey: "refreshToken")
+            let (_, resp) = try await performRequest(url: URL(string: "/auth/logout")!, method: "GET", body: [""])
+            if let httpResp = resp as? HTTPURLResponse, httpResp.statusCode == 200 {
+                return true
+            }
+            return false
         }catch {
-            return
+            return false
         }
     }
 }

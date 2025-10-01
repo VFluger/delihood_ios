@@ -42,8 +42,13 @@ struct ResettingPasswordView: View {
             Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("Ok")) {
                 // Log out user
                 withAnimation(.easeOut) {
-                    AuthManager.shared.logout()
-                    authStore.appState = .loggedOut
+                    Task {
+                        let isLoggedOut = await AuthManager.shared.logout()
+                        guard isLoggedOut else {
+                            return
+                        }
+                    }
+                        authStore.appState = .loggedOut
                 }
             })
         }

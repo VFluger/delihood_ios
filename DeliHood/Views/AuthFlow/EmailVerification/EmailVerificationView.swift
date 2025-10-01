@@ -36,7 +36,9 @@ struct EmailVerificationView: View {
             Spacer()
             HStack {
                 Button {
-                    vm.sendMail()
+                    if !vm.timerActive {
+                        vm.sendMail()
+                    }
                 } label: {
                     if let success = vm.sendSuccess {
                         if success {
@@ -52,9 +54,11 @@ struct EmailVerificationView: View {
                 Spacer()
                     .frame(width: 20)
                 Button {
-                    AuthManager.shared.logout()
-                    authStore.appState = .loggedOut
-                    authStore.user = nil
+                    Task {
+                        let isLoggedOut = await AuthManager.shared.logout()
+                            authStore.appState = .loggedOut
+                            authStore.user = nil
+                    }
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }label: {
                     Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
