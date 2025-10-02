@@ -9,72 +9,153 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
-struct DeliHoodWidgetsAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
-        // Dynamic stateful properties about your activity go here!
-        var emoji: String
-    }
-
-    // Fixed non-changing properties about your activity go here!
-    var name: String
-}
-
 struct DeliHoodWidgetsLiveActivity: Widget {
     var body: some WidgetConfiguration {
-        ActivityConfiguration(for: DeliHoodWidgetsAttributes.self) { context in
-            // Lock screen/banner UI goes here
+        ActivityConfiguration(for: OrderAttributes.self) { context in
             VStack {
-                Text("Hello \(context.state.emoji)")
+                Text("Delihood")
+                    .bold()
+                    .foregroundStyle(.brand)
+                    .padding(.top, 10)
+                HStack {
+                    VStack {
+                        Text(HeadingStatus(from: context.state.status)?.rawValue ?? "Error")
+                            .font(.title3.bold())
+                            .padding(.bottom, 2)
+                        
+                        Text(DescStatus(from: context.state.status)?.rawValue ?? "Please open the app")
+                            .font(.caption)
+                            .frame(width: 150)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(width: 150)
+                    .padding()
+                    Spacer()
+                    ZStack {
+                        ZStack {
+                            Circle()
+                                .stroke(.popup, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                                .rotationEffect(.degrees(-90))
+                            LoaderRing(progress: ProgressStatus(from: context.state.status)?.rawValue ?? 0, color: .brand)
+                                .scaleEffect(3)
+                        }
+                        .frame(width: 69, height: 69)
+                        VStack {
+                            Text("\(EtaStatus(from: context.state.status)?.rawValue ?? 30)m")
+                                .font(.title2.bold())
+                                .foregroundStyle(.brand)
+                                .padding(.trailing)
+                                .offset(x: 8)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.trailing, 10)
+                }
             }
-            .activityBackgroundTint(Color.cyan)
-            .activitySystemActionForegroundColor(Color.black)
 
         } dynamicIsland: { context in
             DynamicIsland {
                 // Expanded UI goes here.  Compose the expanded UI through
                 // various regions, like leading/trailing/center/bottom
                 DynamicIslandExpandedRegion(.leading) {
-                    Text("Leading")
+                    Text("Delihood")
+                        .bold()
+                        .foregroundStyle(.brand)
+                        .padding(10)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text("Trailing")
+                    ZStack {
+                        Circle()
+                            .stroke(.popup, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                            .rotationEffect(.degrees(-90))
+                        LoaderRing(progress: ProgressStatus(from: context.state.status)?.rawValue ?? 0, color: .brand)
+                    }
+                    .frame(width: 23, height: 23)
+                    .padding(10)
+                    
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    Text("Bottom \(context.state.emoji)")
-                    // more content
+                    HStack {
+                        VStack {
+                            Text(HeadingStatus(from: context.state.status)?.rawValue ?? "Error")
+                                .font(.title3)
+                                .padding(.bottom, 2)
+                            Text(DescStatus(from: context.state.status)?.rawValue ?? "Please open the app")
+                                .font(.caption)
+                                .lineLimit(2)
+                                .frame(width: 150)
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(width: 150)
+                        .padding(.leading)
+                        Spacer()
+                        Text("\(EtaStatus(from: context.state.status)?.rawValue ?? 30)min")
+                            .font(.title.bold())
+                            .foregroundStyle(.brand)
+                            .padding(.trailing, 10)
+                    }
                 }
             } compactLeading: {
-                Text("L")
+                Text("\(EtaStatus(from: context.state.status)?.rawValue ?? 30)min")
+                    .bold()
+                    .foregroundStyle(.brand)
+                    .padding(5)
+                    .padding(.leading, 5)
             } compactTrailing: {
-                Text("T \(context.state.emoji)")
+                ZStack {
+                    Circle()
+                        .stroke(.popup, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                    LoaderRing(progress: ProgressStatus(from: context.state.status)?.rawValue ?? 0, color: .brand)
+                }
+                .padding(5)
             } minimal: {
-                Text(context.state.emoji)
+                ZStack {
+                    Text("D")
+                        .bold()
+                        .lineLimit(1)
+                        .foregroundStyle(.brand)
+                    LoaderRing(progress: ProgressStatus(from: context.state.status)?.rawValue ?? 0, color: .brand)
+                }
             }
-            .widgetURL(URL(string: "http://www.apple.com"))
             .keylineTint(Color.red)
         }
     }
 }
 
-extension DeliHoodWidgetsAttributes {
-    fileprivate static var preview: DeliHoodWidgetsAttributes {
-        DeliHoodWidgetsAttributes(name: "World")
+extension OrderAttributes {
+    fileprivate static var preview: OrderAttributes {
+        OrderAttributes(orderId: 1)
     }
 }
 
-extension DeliHoodWidgetsAttributes.ContentState {
-    fileprivate static var smiley: DeliHoodWidgetsAttributes.ContentState {
-        DeliHoodWidgetsAttributes.ContentState(emoji: "😀")
-     }
-     
-     fileprivate static var starEyes: DeliHoodWidgetsAttributes.ContentState {
-         DeliHoodWidgetsAttributes.ContentState(emoji: "🤩")
-     }
-}
 
-#Preview("Notification", as: .content, using: DeliHoodWidgetsAttributes.preview) {
+#Preview("Notification", as: .content, using: OrderAttributes.preview) {
    DeliHoodWidgetsLiveActivity()
 } contentStates: {
-    DeliHoodWidgetsAttributes.ContentState.smiley
-    DeliHoodWidgetsAttributes.ContentState.starEyes
+    OrderAttributes.ContentState(status: "waiting_for_pickup")
+    OrderAttributes.ContentState(status: "delivered")
+}
+
+
+#Preview("DI min", as: .dynamicIsland(.minimal), using: OrderAttributes.preview) {
+   DeliHoodWidgetsLiveActivity()
+} contentStates: {
+    OrderAttributes.ContentState(status: "delivering")
+    OrderAttributes.ContentState(status: "waiting_for_pickup")
+}
+
+#Preview("DI comp", as: .dynamicIsland(.compact), using: OrderAttributes.preview) {
+   DeliHoodWidgetsLiveActivity()
+} contentStates: {
+    OrderAttributes.ContentState(status: "waiting_for_pickup")
+    OrderAttributes.ContentState(status: "delivering")
+}
+
+#Preview("DI exp", as: .dynamicIsland(.expanded), using: OrderAttributes.preview) {
+   DeliHoodWidgetsLiveActivity()
+} contentStates: {
+    OrderAttributes.ContentState(status: "waiting_for_pickup")
+    OrderAttributes.ContentState(status: "delivering")
 }
