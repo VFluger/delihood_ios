@@ -65,9 +65,9 @@ DeliHood/
 
 ## 📲 Related Repositories
 
-📘 SOČ Work (Documentation PDF)
-📱 Delihood iOS App (SwiftUI frontend)
+[📘 SOČ Work (Documentation PDF)](TODO_LINK)
+[📱 Delihood Node.js Backend (Express.js)](https://github.com/VFluger/delihood_backend)
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](/LICENSE.txt) file for details.
